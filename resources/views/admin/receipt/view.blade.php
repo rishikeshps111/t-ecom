@@ -1,6 +1,7 @@
 @extends('admin.layouts.app')
 @section('title', 'Payment Receipt')
 @section('style')
+    @include('admin.scripts.css')
     <style>
         .preview-bottom-btns a,
         .preview-bottom-btns button {
@@ -130,7 +131,7 @@
 
                                     <ul>
                                         @php
-                                            $amountToPayTwo = $receipt->amount * ($receipt->invoice->quotation->workPlan->company->productionStaff->production_c_percentage / 100);
+                                            $amountToPayTwo = $receipt->amount * ($receipt->invoice->quotation->workPlan->productionStaff->production_c_percentage / 100);
                                         @endphp
                                         {{-- <li>
                                             Production Staff Commission Amount:
@@ -438,11 +439,26 @@
                     $('#modalBody').html(response.html);
                     $('#modalTitle').text(response.title);
                     $('#formModal').modal('show');
+                    $('#planner_id').select2({
+                        dropdownParent: $('#formModal'),
+                        width: '100%'
+                    });
+
                 },
                 error: function () {
                     alert('Failed to load status change form.');
                 }
             });
+        });
+
+        $(document).on('change', '#planner_id', function () {
+            let percentage = parseFloat($(this).find(':selected').data('percentage')) || 0;
+            let baseAmount = parseFloat($('#base_amount').val()) || 0;
+
+            let payoutAmount = (baseAmount * percentage) / 100;
+
+            $('#amount').val(payoutAmount.toFixed(2));
+            $('#amount_display').val(payoutAmount.toFixed(2) + ' MYR');
         });
 
         $(document).on('click', '.production-payout', function () {
@@ -457,12 +473,27 @@
                     $('#modalBody').html(response.html);
                     $('#modalTitle').text(response.title);
                     $('#formModal').modal('show');
+                    $('#production_staff_id').select2({
+                        dropdownParent: $('#formModal'),
+                        width: '100%'
+                    });
                 },
                 error: function () {
                     alert('Failed to load status change form.');
                 }
             });
         });
+
+        $(document).on('change', '#production_staff_id', function () {
+            let percentage = parseFloat($(this).find(':selected').data('percentage')) || 0;
+            let baseAmount = parseFloat($('#base_amount').val()) || 0;
+
+            let payoutAmount = (baseAmount * percentage) / 100;
+
+            $('#amount').val(payoutAmount.toFixed(2));
+            $('#amount_display').val(payoutAmount.toFixed(2) + ' MYR');
+        });
+
 
         $(document).on('submit', '#commonFormTwo', function (e) {
             e.preventDefault();

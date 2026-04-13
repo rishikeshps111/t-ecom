@@ -117,13 +117,13 @@
                                         <tr>
                                             <th>Planner</th>
                                             <td>:
-                                                {{ $invoice->quotation->workPlan->company->planner->name ?? 'Not Available' }}
+                                                {{ $invoice->quotation->workPlan->planner->name ?? 'Not Available' }}
                                             </td>
                                         </tr>
                                         <tr>
                                             <th>Production</th>
                                             <td>:
-                                                {{ $invoice->quotation->workPlan->company->productionStaff->name ?? 'Not Available' }}
+                                                {{ $invoice->quotation->workPlan->productionStaff->name ?? 'Not Available' }}
                                             </td>
                                         </tr>
                                         <tr>

@@ -71,6 +71,7 @@
                 <th>Invoice Amount</th>
                 <th>OR No</th>
                 <th>OR Amount</th>
+                <th>STT</th>
                 <th>Status</th>
             </tr>
         </thead>
@@ -84,6 +85,9 @@
                     <td>{{ $row->invoice?->grant_total }}</td>
                     <td>{{ $row->custom_payment_id }}</td>
                     <td>{{ $row->amount }}</td>
+                    <td>
+                        {{ number_format($row->amount - ($row->amount / 1.08), 2) }}
+                    </td>
                     <td>{{ ucfirst($row->status) }}</td>
                 </tr>
             @endforeach

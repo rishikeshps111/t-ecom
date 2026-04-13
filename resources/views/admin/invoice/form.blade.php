@@ -78,7 +78,7 @@
             <label>Planner</label>
             <select class="form-select" disabled>
                 <option>
-                    {{ $workPlanData->company->planner->name ?? $invoice->quotation->company->planner->name ?? '' }}
+                    {{ $workPlanData->planner->name ?? $invoice->quotation->planner->name ?? '' }}
                 </option>
             </select>
         </div>
@@ -87,7 +87,7 @@
             <label>Production Staff</label>
             <select class="form-select" disabled>
                 <option>
-                    {{ $workPlanData->company->productionStaff->name ?? $invoice->quotation->workPlan->company->productionStaff->name ?? ''}}
+                    {{ $workPlanData->productionStaff->name ?? $invoice->quotation->workPlan->productionStaff->name ?? ''}}
                 </option>
             </select>
         </div>
@@ -199,9 +199,9 @@
     <hr>
     <h5 class="mb-3">Invoice Items</h5>
     <input type="hidden" name="planner_commission" id="plannerCommission"
-        value=" {{ $workPlanData->company->planner->planner_c_percentage ?? $invoice->quotation->workPlan->company->planner->planner_c_percentage ?? 0  }}">
+        value=" {{ $workPlanData->planner->planner_c_percentage ?? $invoice->quotation->workPlan->planner->planner_c_percentage ?? 0  }}">
     <input type="hidden" name="production_commission" id="productionCommission"
-        value=" {{ $workPlanData->company->productionStaff->production_c_percentage ?? ($invoice->quotation->workPlan->company->productionStaff->production_c_percentage ?? 0) }}">
+        value=" {{ $workPlanData->productionStaff->production_c_percentage ?? ($invoice->quotation->workPlan->productionStaff->production_c_percentage ?? 0) }}">
     <div id="items-container">
         @php
             $oldItems = old('items', isset($invoice) ? $invoice->items->toArray() : [0 => []]);
@@ -327,7 +327,7 @@
                                 id="totalPlannerCommissionPercentage">0.00</span>% <input type="hidden"
                                 name="p_bill_percentage" value="0.00" id="billToP"></li>
                         <li class="detail-label fw-bold">Production Commission % : <span
-                                class="detail-value">{{ $workPlanData->company->productionStaff->production_c_percentage ?? ($invoice->quotation->workPlan->company->productionStaff->production_c_percentage ?? 0) }}</span>%
+                                class="detail-value">{{ $workPlanData->productionStaff->production_c_percentage ?? ($invoice->quotation->workPlan->productionStaff->production_c_percentage ?? 0) }}</span>%
                         </li>
                         <li class="detail-label fw-bold">Production Commission : <span class="detail-value"
                                 id="totalProductionCommission">00.0</span></li>

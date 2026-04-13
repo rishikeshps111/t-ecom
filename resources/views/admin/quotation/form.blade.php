@@ -164,20 +164,32 @@
 
         <div class="col-lg-4 mb-3 o-f-inp">
             <label>Planner</label>
-            <select class="form-select" disabled>
-                <option>
-                    {{ $workPlanData->company->planner->name ?? ($quotation->company->planner->name ?? '') }}
-                </option>
+            <select class="form-select" name="planner_id">
+                <option value="">-- Select Planner --</option>
+                @foreach ($planners as $planner)
+                    <option value="{{ $planner->id }}" {{ old('planner_id', $workPlanData->planner_id ?? $quotation->workPlan->planner_id ?? '') == $planner->id ? 'selected' : '' }}>
+                        {{ $planner->name }}
+                    </option>
+                @endforeach
             </select>
+            @error('planner_id')
+                <small class="text-danger">{{ $message }}</small>
+            @enderror
         </div>
 
         <div class="col-lg-4 mb-3 o-f-inp">
             <label>Production Staff</label>
-            <select class="form-select" disabled>
-                <option>
-                    {{ $workPlanData->company->productionStaff->name ?? ($quotation->workPlan->company->productionStaff->name ?? '') }}
-                </option>
+            <select class="form-select" name="production_staff_id">
+                <option value="">-- Select Production Staff --</option>
+                @foreach ($staffs as $staff)
+                    <option value="{{ $staff->id }}" {{ old('production_staff_id', $workPlanData->production_staff_id ?? $quotation->workPlan->production_staff_id ?? '') == $staff->id ? 'selected' : '' }}>
+                        {{ $staff->name }}
+                    </option>
+                @endforeach
             </select>
+            @error('production_staff_id')
+                <small class="text-danger">{{ $message }}</small>
+            @enderror
         </div>
 
         <div class="col-lg-4 mb-3 o-f-inp">

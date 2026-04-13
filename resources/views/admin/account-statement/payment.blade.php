@@ -119,6 +119,7 @@
                                                 <th class="text-center">Invoice AMOUNT</th>
                                                 <th class="text-center">OR NO</th>
                                                 <th class="text-center">OR AMOUNT</th>
+                                                <th class="text-center">STT</th>
                                                 <th class="text-center">STATUS</th>
                                             </tr>
                                         </thead>

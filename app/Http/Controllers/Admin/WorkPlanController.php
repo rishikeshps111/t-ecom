@@ -280,8 +280,10 @@ class WorkPlanController extends Controller implements HasMiddleware
         $totalGroups = Customer::get();
         $customerID = $request->customer_id ?? null;
         $documentTypes = DocumentType::where('is_active', true)->get();
+        $staffs = $this->getScopedProductionStaff();
 
-        return view('admin.work-plan.create', compact('types', 'customers', 'planners', 'totalGroups', 'customerID', 'documentTypes'));
+
+        return view('admin.work-plan.create', compact('types', 'customers', 'planners', 'totalGroups', 'customerID', 'documentTypes', 'staffs'));
     }
 
     /**
@@ -362,8 +364,9 @@ class WorkPlanController extends Controller implements HasMiddleware
         $totalGroups = Customer::get();
         $customerID = $request->customer_id ?? null;
         $documentTypes = DocumentType::where('is_active', true)->get();
+        $staffs = $this->getScopedProductionStaff();
 
-        return view('admin.work-plan.edit', compact('types', 'customers', 'planners', 'totalGroups', 'workOrder', 'customerID', 'documentTypes'));
+        return view('admin.work-plan.edit', compact('types', 'customers', 'planners', 'totalGroups', 'workOrder', 'customerID', 'documentTypes', 'staffs'));
     }
 
     /**
@@ -467,9 +470,9 @@ class WorkPlanController extends Controller implements HasMiddleware
     public function plannerPayoutView(Request $request)
     {
         $record = Payment::with('invoice')->find($request->id);
-
+        $planners = $this->getScopedPlanners();
         return response()->json([
-            'html' => view('admin.work-plan.planner-payout', compact('record'))->render(),
+            'html' => view('admin.work-plan.planner-payout', compact('record', 'planners'))->render(),
             'title' => 'Pay Planner Commission',
         ]);
     }
@@ -477,9 +480,10 @@ class WorkPlanController extends Controller implements HasMiddleware
     public function productionPayoutView(Request $request)
     {
         $record = Payment::with('invoice')->find($request->id);
+        $staffs = $this->getScopedProductionStaff();
 
         return response()->json([
-            'html' => view('admin.work-plan.production-payout', compact('record'))->render(),
+            'html' => view('admin.work-plan.production-payout', compact('record', 'staffs'))->render(),
             'title' => 'Pay Production Commission',
         ]);
     }
@@ -542,14 +546,20 @@ class WorkPlanController extends Controller implements HasMiddleware
             'paid_date' => 'required|date',
             'payment_method' => 'required',
             'remarks'   => 'nullable|string|max:1000',
+            'planner_id' => 'required'
         ]);
 
         $record = Payment::with('invoice.quotation.workPlan')->findOrFail($request->id);
 
+        $workPlan =  WorkPlan::find($record->invoice?->quotation?->workPlan?->id);
+        $workPlan->update([
+            'planner_id' => $request->planner_id
+        ]);
+
         PlannerPayout::create([
             'invoice_id' => $record->invoice_id,
             'payment_id' => $record->id,
-            'planner_id' => $record->invoice?->quotation?->workPlan?->planner_id,
+            'planner_id' => $request->planner_id,
             'amount'     => $request->amount,
             'remarks'    => $request->remarks,
             'payment_method'    => $request->payment_method,
@@ -576,9 +586,15 @@ class WorkPlanController extends Controller implements HasMiddleware
             'paid_date' => 'required|date',
             'payment_method' => 'required',
             'remarks'   => 'nullable|string|max:1000',
+            'production_staff_id' => 'required'
+
         ]);
 
         $record = Payment::with('invoice.quotation.workPlan')->findOrFail($request->id);
+        $workPlan =  WorkPlan::find($record->invoice?->quotation?->workPlan?->id);
+        $workPlan->update([
+            'production_staff_id' => $request->production_staff_id
+        ]);
         activity()
             ->causedBy(Auth::id())
             ->performedOn($record)
@@ -587,7 +603,7 @@ class WorkPlanController extends Controller implements HasMiddleware
         ProductionStaffPayout::create([
             'invoice_id' => $record->invoice_id,
             'payment_id' => $record->id,
-            'production_staff_id' => $record->invoice?->quotation?->workPlan?->company?->production_staff_id,
+            'production_staff_id' => $request->production_staff_id,
             'amount'     => $request->amount,
             'remarks'    => $request->remarks,
             'payment_method'    => $request->payment_method,

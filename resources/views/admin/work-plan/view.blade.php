@@ -132,7 +132,7 @@
                                                 </li>
                                                 <li>Planner : <span>{{ $workOrder->planner->name ?? '-' }}</span></li>
                                                 <li>Production Staff :
-                                                    <span>{{ $workOrder->company->productionStaff->name ?? '-' }}</span>
+                                                    <span>{{ $workOrder->productionStaff->name ?? '-' }}</span>
                                                 </li>
                                             </ul>
                                         </div>
@@ -243,12 +243,12 @@
                                             Production Commission :
                                             <span>
                                                 RM
-                                                {{ ($workOrder->quotation->grant_total * $workOrder->company->productionStaff->production_c_percentage) / 100 }}
+                                                {{ ($workOrder->quotation->grant_total * $workOrder->productionStaff->production_c_percentage) / 100 }}
                                             </span>
                                         </li>
                                     @endif
                                     <li class="bg2">Production Commission % : <span>
-                                            {{ $workOrder->company->productionStaff->production_c_percentage ?? '-' }}%</span>
+                                            {{ $workOrder->productionStaff->production_c_percentage ?? '-' }}%</span>
                                     </li>
                                 </ul>
                             </div>
@@ -1257,7 +1257,7 @@
 
                                                     $commission =
                                                         $netAmount *
-                                                        ($workOrder->company->productionStaff->production_c_percentage /
+                                                        ($workOrder->productionStaff->production_c_percentage /
                                                             100);
                                                 @endphp
 
@@ -1288,7 +1288,7 @@
                                                     <th class="text-start">Total Commission</th>
                                                     <td class="text-end">RM</td>
                                                     <td class="text-end">
-                                                        {{ ($workOrder->quotation->grant_total * $workOrder->company->productionStaff->production_c_percentage) / 100 }}
+                                                        {{ ($workOrder->quotation->grant_total * $workOrder->productionStaff->production_c_percentage) / 100 }}
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -1301,7 +1301,7 @@
                                                     <th class="text-start">Planner Commission %</th>
                                                     <td class="text-end"></td>
                                                     <td class="text-end">
-                                                        {{ $workOrder->company->productionStaff->production_c_percentage ?? '-' }}%
+                                                        {{ $workOrder->productionStaff->production_c_percentage ?? '-' }}%
                                                     </td>
                                                 </tr>
                                             </tbody>
@@ -1462,7 +1462,7 @@
                                                             <td class="text-center">{{ $item->payment->amount ?? '-' }}
                                                             </td>
                                                             <td class="text-center">
-                                                                {{ $item->payment->invoice->quotation->workPlan->company->productionStaff->production_c_percentage ?? '-' }}%
+                                                                {{ $item->payment->invoice->quotation->workPlan->productionStaff->production_c_percentage ?? '-' }}%
                                                             </td>
                                                             <td class="text-center">{{ $item->amount ?? '-' }}
                                                             </td>
@@ -1486,15 +1486,15 @@
                                                                 <th class="text-start">Total Commission</th>
                                                                 <td class="text-end">MYR</td>
                                                                 <td class="text-end">
-                                                                    {{ $workOrder->quotation->invoice->grant_total * ($workOrder->company->productionStaff->production_c_percentage / 100) ?? '-' }}
+                                                                    {{ $workOrder->quotation->invoice->grant_total * ($workOrder->productionStaff->production_c_percentage / 100) ?? '-' }}
                                                                 </td>
                                                             </tr>
                                                             <tr>
                                                                 <th class="text-start">Production Commission %</th>
                                                                 <td class="text-end"></td>
                                                                 <td class="text-end">
-                                                                    {{ isset($workOrder->company->productionStaff->production_c_percentage)
-                            ? number_format($workOrder->company->productionStaff->production_c_percentage, 2)
+                                                                    {{ isset($workOrder->productionStaff->production_c_percentage)
+                            ? number_format($workOrder->productionStaff->production_c_percentage, 2)
                             : '-' }}%
                                                                 </td>
                                                             </tr>
@@ -1965,11 +1965,11 @@
             Swal.fire({
                 title: 'Change Note Status',
                 html: `
-                                                                                                                                                                                                                                                                                                                                                                                                                                                            <select id="noteStatus" class="form-select">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                <option value="active">Active</option>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                <option value="closed">Closed</option>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                            </select>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                        `,
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <select id="noteStatus" class="form-select">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <option value="active">Active</option>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <option value="closed">Closed</option>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </select>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        `,
                 confirmButtonText: 'Update',
                 showCancelButton: true,
                 didOpen: () => {

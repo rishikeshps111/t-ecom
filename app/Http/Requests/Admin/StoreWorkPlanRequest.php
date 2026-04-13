@@ -28,6 +28,7 @@ class StoreWorkPlanRequest extends FormRequest
             'company_type_id' => 'required|exists:company_types,id',
             'total_group_id' => 'required|exists:customers,id',
             'planner_id' => 'nullable|exists:users,id',
+            'production_staff_id' => 'nullable|exists:users,id',
             'description' => 'nullable|string',
             // 'attachment' => 'nullable|file|mimes:pdf,jpg,jpeg,png,gif|max:5120', // 5MB max
             // 'file_type' => 'nullable|in:image,word,pdf,excel,power_point',

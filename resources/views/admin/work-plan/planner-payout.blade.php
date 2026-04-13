@@ -4,11 +4,14 @@
     <input type="hidden" name="id" value="{{ $record->id }}">
 
     @php
-        $amountToPay = $record->amount * ($record->invoice->p_bill_percentage / 100);
+        $amountToPay = $record->amount * ($record->invoice->quotation->workPlan->planner->planner_c_percentage / 100);
     @endphp
 
     <div class="modal-card-cs-announse">
         <div class="row">
+
+            <input type="hidden" id="base_amount" value="{{ $record->amount }}">
+
 
             <!-- Receipt details (unchanged) -->
 
@@ -16,8 +19,8 @@
                 <div class="md-dt-panel">
                     <label class="form-label fw-bold">Payout Amount</label>
                     <input type="text" class="form-control shadow-none" value="{{ number_format($amountToPay, 2) }} MYR"
-                        readonly>
-                    <input type="hidden" name="amount" value="{{ $amountToPay }}">
+                        id="amount_display" readonly>
+                    <input type="hidden" id="amount" name="amount" value="{{ $amountToPay }}">
                 </div>
             </div>
 
@@ -42,6 +45,23 @@
                         <option value="Cheque">Cheque</option>
                         <option value="Cash">Cash</option>
                         <option value="Bank Transfer">Bank Transfer</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="mb-3 col-lg-12">
+                <div class="md-dt-panel">
+                    <label class="form-label fw-bold">
+                        Planner <span class="text-danger">*</span>
+                    </label>
+                    <select name="planner_id" id="planner_id" class="form-control shadow-none" required>
+                        <option value="">Select Planner</option>
+                        @foreach ($planners as $planner)
+                            <option value="{{ $planner->id }}" {{ old('planner_id', $record->invoice->quotation->workPlan->planner_id ?? '') == $planner->id ? 'selected' : '' }}
+                                data-percentage="{{ $planner->planner_c_percentage ?? 0 }}">
+                                {{ $planner->name }}
+                            </option>
+                        @endforeach
                     </select>
                 </div>
             </div>

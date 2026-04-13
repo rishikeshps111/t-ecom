@@ -429,7 +429,7 @@ class AccountStatementController extends Controller implements HasMiddleware
             if ($request->filled('from_date') && $request->filled('to_date')) {
                 $records->whereBetween('created_at', [
                     $request->from_date,
-                    $request->to_date
+                    Carbon::parse($request->to_date)->addDay()
                 ]);
             }
 
@@ -481,6 +481,10 @@ class AccountStatementController extends Controller implements HasMiddleware
                 ->addColumn('or_number', function ($row) {
                     return $row->custom_payment_id ?? '-';
                 })
+                ->addColumn('stt', function ($row) {
+                    $roundUp = $row->amount / 1.08;
+                    return round($row->amount - $roundUp, 2);
+                })
                 ->editColumn('status', function ($row) {
                     if (!$row->status) {
                         return '<span class="badge bg-secondary">-</span>';
@@ -496,7 +500,7 @@ class AccountStatementController extends Controller implements HasMiddleware
                     if ($request->filled('from_date') && $request->filled('to_date')) {
                         $query->whereBetween('created_at', [
                             $request->from_date,
-                            $request->to_date
+                            Carbon::parse($request->to_date)->addDay()
                         ]);
                     }
                     if ($request->filled('total_group')) {
@@ -530,7 +534,7 @@ class AccountStatementController extends Controller implements HasMiddleware
         ])->orderBy('created_at', 'desc');
 
         if ($request->filled('from_date') && $request->filled('to_date')) {
-            $records->whereBetween('created_at', [$request->from_date, $request->to_date]);
+            $records->whereBetween('created_at', [$request->from_date,   Carbon::parse($request->to_date)->addDay()]);
         }
 
         if ($request->filled('total_group')) {

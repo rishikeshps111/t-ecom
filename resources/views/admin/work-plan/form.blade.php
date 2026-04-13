@@ -26,8 +26,7 @@
                     ) == $customer->id ? 'selected' : '' }} data-type="{{ $customer->company_type_id }}"
                                     data-total-group="{{ $customer->total_group_id }}" data-planner="{{ $customer->planner_id }}"
                                     data-name="{{ $customer->company_name }}" data-phone="{{ $customer->mobile_no }}"
-                                    data-staff="{{ $customer->productionStaff->name ?? '' }}"
-                                    data-email="{{ $customer->email_address }}">
+                                    data-staff="{{ $customer->production_staff_id ?? '' }}" data-email="{{ $customer->email_address }}">
                                     {{ $customer->company_name }}
                                 </option>
                 @endforeach
@@ -63,7 +62,7 @@
 
         <div class="col-lg-4 mb-3 o-f-inp">
             <label>Planner <span class="text-danger">*</span></label>
-            <select name="planner_id" id="planner_id" class="form-select search-select" disabled>
+            <select name="planner_id" id="planner_id" class="form-select search-select">
                 <option value="">-- Select Planner --</option>
                 @foreach ($planners as $planner)
                     <option value="{{ $planner->id }}" {{ old('planner_id', $workOrder->planner_id ?? '') == $planner->id ? 'selected' : '' }}>
@@ -71,7 +70,6 @@
                     </option>
                 @endforeach
             </select>
-            <input type="hidden" name="planner_id" id="planner_id_hidden" value="{{ $workOrder->planner_id ?? '' }}">
             @error('planner_id')
                 <small class="text-danger">{{ $message }}</small>
             @enderror
@@ -83,8 +81,18 @@
         </div>
 
         <div class="col-lg-4 mb-3 o-f-inp">
-            <label>Production Staff</label>
-            <input type="text" id="production_staff" class="form-control" readonly>
+            <label>Production Staff <span class="text-danger">*</span></label>
+            <select name="production_staff_id" id="production_staff_id" class="form-select search-select">
+                <option value="">-- Select Production Staff --</option>
+                @foreach ($staffs as $staff)
+                    <option value="{{ $staff->id }}" {{ old('production_staff_id', $workOrder->production_staff_id ?? '') == $staff->id ? 'selected' : '' }}>
+                        {{ $staff->name }}
+                    </option>
+                @endforeach
+            </select>
+            @error('production_staff_id')
+                <small class="text-danger">{{ $message }}</small>
+            @enderror
         </div>
 
         <div class="col-lg-4 mb-3 o-f-inp">

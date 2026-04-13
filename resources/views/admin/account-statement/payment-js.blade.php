@@ -26,6 +26,7 @@
                 { data: 'invoice_amount', name: 'invoice_amount' },
                 { data: 'or_number', name: 'or_number' },
                 { data: 'amount', name: 'amount' },
+                { data: 'stt', name: 'stt' },
                 { data: 'status', name: 'status' },
             ]
         });

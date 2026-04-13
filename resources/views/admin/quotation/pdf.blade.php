@@ -318,12 +318,12 @@
                         </tr>
                         <tr>
                             <th>Planner</th>
-                            <td>: {{ $quotation->workPlan->company->planner->name ?? 'Not Available' }}</td>
+                            <td>: {{ $quotation->workPlan->planner->name ?? 'Not Available' }}</td>
                         </tr>
                         <tr>
                             <th>Production</th>
                             <td>:
-                                {{ $quotation->workPlan->company->productionStaff->name ?? 'Not Available' }}
+                                {{ $quotation->workPlan->productionStaff->name ?? 'Not Available' }}
                             </td>
                         </tr>
                     </table>

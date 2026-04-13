@@ -47,7 +47,7 @@
             <label>Planner</label>
             <select class="form-select" disabled>
                 <option>
-                    {{ $invoice->quotation->workPlan->company->planner->name ?? '' }}
+                    {{ $invoice->quotation->workPlan->planner->name ?? '' }}
                 </option>
             </select>
         </div>
@@ -56,7 +56,7 @@
             <label>Production Staff</label>
             <select class="form-select" disabled>
                 <option>
-                    {{ $invoice->quotation->workPlan->company->productionStaff->name ?? ''}}
+                    {{ $invoice->quotation->workPlan->productionStaff->name ?? ''}}
                 </option>
             </select>
         </div>

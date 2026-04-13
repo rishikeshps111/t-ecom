@@ -1,11 +1,14 @@
 <script>
 
     $(document).ready(function () {
+
+        const isEditMode = {{ isset($workOrder) ? 'true' : 'false' }};
+
         $('#company_id').on('change', function () {
             syncCustomerData();
         });
 
-        if ($('#company_id').val()) {
+        if ($('#company_id').val() && !isEditMode) {
             syncCustomerData();
         }
 
@@ -15,6 +18,7 @@
             const companyTypeId = selectedOption.data('type');
             const totalGroupId = selectedOption.data('total-group');
             const plannerId = selectedOption.data('planner');
+            const staffId = selectedOption.data('staff');
 
 
             // WP Type
@@ -34,6 +38,10 @@
                 .val(totalGroupId ?? '')
                 .trigger('change');
 
+            $('#production_staff_id')
+                .val(staffId ?? '')
+                .trigger('change');
+
             updateCustomerInfo();
         }
 
@@ -45,13 +53,11 @@
             const name = selected.data('name') || '';
             const email = selected.data('email') || '';
             const phone = selected.data('phone') || '';
-            const staff = selected.data('staff') || '';
 
 
             $('#customer_name').val(name);
             $('#customer_email').val(email);
             $('#customer_phone').val(phone);
-            $('#production_staff').val(staff);
 
         }
     });

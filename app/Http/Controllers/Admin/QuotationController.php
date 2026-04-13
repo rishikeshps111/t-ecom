@@ -173,8 +173,11 @@ class QuotationController extends Controller implements HasMiddleware
         $workPlanData = WorkPlan::find($request->work_plan) ?? null;
         $typeCode = $this->getTypeCode($workPlanData->company_type_id);
         $code = Quotation::generateCompanyCode($typeCode);
+        $planners = $this->getScopedPlanners();
+        $staffs = $this->getScopedProductionStaff();
 
-        return view('admin.quotation.create', compact('customers', 'companies', 'items', 'types', 'corpUsers', 'code', 'currencies', 'totalGroups', 'workPlans', 'workPlanData'));
+
+        return view('admin.quotation.create', compact('customers', 'companies', 'items', 'types', 'corpUsers', 'code', 'currencies', 'totalGroups', 'workPlans', 'workPlanData', 'planners', 'staffs'));
     }
 
     private function getTypeCode($companyTypeId): string
@@ -252,6 +255,12 @@ class QuotationController extends Controller implements HasMiddleware
             // Generate quotation number
             // $quotation->quotation_number = Quotation::generateQuotationNumber($quotation->id);
             $quotation->save();
+
+            $workPlan = WorkPlan::find($request->work_plan_id);
+            $workPlan->update([
+                'planner_id' => $request->planner_id,
+                'production_staff_id' => $request->production_staff_id
+            ]);
 
 
             // foreach (range(1, 4) as $level) {
@@ -357,7 +366,9 @@ class QuotationController extends Controller implements HasMiddleware
         $totalGroups = Customer::get();
         $workPlans = WorkPlan::get();
         $workPlanData = WorkPlan::find($request->work_plan) ?? null;
-        return view('admin.quotation.edit', compact('quotation', 'customers', 'companies', 'items', 'types', 'corpUsers', 'currencies', 'totalGroups', 'workPlans', 'workPlanData'));
+        $planners = $this->getScopedPlanners();
+        $staffs = $this->getScopedProductionStaff();
+        return view('admin.quotation.edit', compact('quotation', 'customers', 'companies', 'items', 'types', 'corpUsers', 'currencies', 'totalGroups', 'workPlans', 'workPlanData', 'planners', 'staffs'));
     }
 
     /**
@@ -473,6 +484,12 @@ class QuotationController extends Controller implements HasMiddleware
                     }
                 }
             }
+
+            $workPlan = WorkPlan::find($quotation->work_plan_id);
+            $workPlan->update([
+                'planner_id' => $request->planner_id,
+                'production_staff_id' => $request->production_staff_id
+            ]);
 
             activity()
                 ->causedBy(Auth::id())
@@ -786,5 +803,78 @@ class QuotationController extends Controller implements HasMiddleware
             'message' => 'Status updated successfully.',
             'type' => $record->status
         ]);
+    }
+
+
+    protected function getScopedCustomers()
+    {
+        $user = Auth::user();
+
+        $query = Company::withoutGlobalScopes()
+            ->orderBy('company_name', 'asc');
+
+        if ($user->hasRole(['Customer', 'Corp User'])) {
+            $companyIds = UserCompany::where('user_id', $user->id)
+                ->pluck('company_id')
+                ->toArray();
+
+            return empty($companyIds)
+                ? collect()
+                : $query->whereIn('id', $companyIds)->get();
+        }
+
+        if ($user->hasRole('Planner')) {
+            return $query->where('planner_id', $user->id)->get();
+        }
+
+        if ($user->hasRole('Production Staff')) {
+            return $query->where('production_staff_id', $user->id)->get();
+        }
+
+        return $query->get();
+    }
+
+    protected function getScopedPlanners()
+    {
+        $user = Auth::user();
+
+        if ($user->hasRole('Customer') || $user->hasRole('Corp User')) {
+            $companyIds = $this->getScopedCustomers()->pluck('id');
+
+            if ($companyIds->isEmpty()) {
+                return collect();
+            }
+
+            return User::role('Planner')
+                ->whereHas('plannerCompanies', function ($query) use ($companyIds) {
+                    $query->whereIn('id', $companyIds);
+                })
+                ->orderBy('name', 'asc')
+                ->get();
+        }
+
+        return User::role('Planner')->orderBy('name', 'asc')->get();
+    }
+
+    protected function getScopedProductionStaff()
+    {
+        $user = Auth::user();
+
+        if ($user->hasRole('Customer') || $user->hasRole('Corp User')) {
+            $companyIds = $this->getScopedCustomers()->pluck('id');
+
+            if ($companyIds->isEmpty()) {
+                return collect();
+            }
+
+            return User::where('user_type', 'production')
+                ->whereHas('customerUsers', function ($query) use ($companyIds) {
+                    $query->whereIn('id', $companyIds);
+                })
+                ->orderBy('name', 'asc')
+                ->get();
+        }
+
+        return User::where('user_type', 'production')->orderBy('name', 'asc')->get();
     }
 }

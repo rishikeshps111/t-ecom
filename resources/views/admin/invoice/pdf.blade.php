@@ -307,13 +307,13 @@
                         <tr>
                             <th>Planner</th>
                             <td>:
-                                {{ $invoice->quotation->workPlan->company->planner->name ?? 'N/A' }}
+                                {{ $invoice->quotation->workPlan->planner->name ?? 'N/A' }}
                             </td>
                         </tr>
                         <tr>
                             <th>Production</th>
                             <td>:
-                                {{ $invoice->quotation->workPlan->company->productionStaff->name ?? 'N/A' }}
+                                {{ $invoice->quotation->workPlan->productionStaff->name ?? 'N/A' }}
                             </td>
                         </tr>
                         <tr>

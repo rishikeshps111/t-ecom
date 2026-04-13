@@ -38,6 +38,8 @@ class StoreQuotationRequest extends FormRequest
             // 'validity_in_days'     => 'required|numeric',
             'payment_terms'     => 'nullable|string|max:500',
             'remarks'     => 'nullable|string|max:500',
+            'planner_id' => 'required|exists:users,id',
+            'production_staff_id' => 'required|exists:users,id',
 
             // 'notes'             => 'required|string|max:1000',
             // 'terms'             => 'required|string|max:1000',
