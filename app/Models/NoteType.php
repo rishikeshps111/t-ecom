@@ -1,0 +1,13 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class NoteType extends Model
+{
+    protected $fillable = [
+        'note',
+        'is_active',
+    ];
+}

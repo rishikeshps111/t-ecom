@@ -1,0 +1,20 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Currency extends Model
+{
+    protected $fillable = [
+        'currency_name',
+        'currency_code',
+        'symbol',
+        'is_active',
+    ];
+
+    public function customers()
+    {
+        return $this->hasMany(Customer::class);
+    }
+}

@@ -1,0 +1,198 @@
+.dashboard-card{
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  background-color: #fff;
+  border-radius: 25px;
+  overflow: hidden;
+   background: rgb(255 255 255 / 73%);
+    backdrop-filter: blur(7px);
+    -webkit-backdrop-filter: blur(7px);
+}
+.dashboard-card .dashboard-card-icon{
+ height: 120px;
+ width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width:120px;
+  border-radius: 25px;
+}
+.dashboard-card .dashboard-card-icon i{
+  font-size: 45px;
+  color: #fff;
+}
+.dashboard-card .dashboard-card-dt{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+}
+.dashboard-card .dashboard-card-dt h3{
+  margin: 0;
+  font-size: 22px;
+  font-weight: 600;
+  color: #3d3d3dbf;
+}
+.dashboard-card .dashboard-card-dt p{
+  margin: 0;
+  font-size: 15px;
+  color: #222222bf;
+  font-weight: 600;
+}
+.icon_bg_1{
+  background-color: #39B27C ;
+}
+.icon_bg_2{
+  background-color: #e76262  ;
+}
+.icon_bg_3{
+  background-color: #f8d347  ;
+}
+.icon_bg_4{
+  background-color: #9544ea  ;
+}
+.icon_bg_5{
+  background-color: #02cac4  ;
+}
+.icon_bg_6{
+  background-color: #e762dd  ;
+}
+
+
+.dashboard-card-second{
+    border-radius:20px;
+    padding:20px;
+}
+.dashboard-card-second .dashboard-card-icon{
+    width:70px;
+    height:70px;
+    min-width:70px;
+    border-radius:50%;
+}
+.dashboard-card-second .dashboard-card-icon i{
+    font-size:25px;
+}
+.dashboard-card-second .dashboard-card-dt{
+    align-items: flex-start;
+}
+
+.dashboard-card-second .dashboard-card-dt h3{
+    font-size:25px;
+    color:#000;
+}
+.dashboard-card-second .dashboard-card-dt p{
+    font-size:14px;
+    color:#000;
+}
+.dashboard-card-second .dashboard-card-dt small{
+    font-size:14px;
+}
+
+
+
+
+
+
+.dashboard-card-third{
+    padding:15px;
+    padding-left: 25px;
+}
+.dashboard-card-third .dashboard-card-icon{
+      width:90px;
+    height:90px;
+    min-width:90px;
+    border-radius:20%;
+    padding:10px;
+}
+/*.dashboard-card-third.dashBG-1{*/
+/*        background-color: #02cac4;*/
+/*}*/
+
+/*.dashboard-card-third.dashBG-1 .dashboard-card-icon{*/
+/*    color:#02cac4;*/
+/*    background-color:#089b97;*/
+/*}*/
+/*.dashboard-card-third.dashBG-2{*/
+/*        background-color: #e76262;*/
+/*}*/
+
+/*.dashboard-card-third.dashBG-2 .dashboard-card-icon{*/
+/*    color:#02cac4;*/
+/*    background-color:#bf3e3e;*/
+/*}*/
+/*.dashboard-card-third.dashBG-3{*/
+/*        background-color: #f8d347;*/
+/*}*/
+
+/*.dashboard-card-third.dashBG-3 .dashboard-card-icon{*/
+/*    color:#02cac4;*/
+/*    background-color:#d0ac22;*/
+/*}*/
+
+
+
+
+.dashboard-card-third .dashboard-card-dt{
+    align-items: flex-start;
+}
+
+.dashboard-card-third .dashboard-card-dt h3{
+    font-size:32px;
+    color:#222;
+}
+.dashboard-card-third .dashboard-card-dt p{
+    font-size:16px;
+    color:#222;
+    font-weight:400;
+}
+.dashboard-card-third .dashboard-card-dt small{
+    font-size:14px;
+}
+.dashboard-project-view-widget{
+   ackground-color: #ffffff66;
+    border: 0;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+    padding: 20px 25px;
+    border-radius: 30px;
+    background: rgb(255 255 255 / 73%);
+    backdrop-filter: blur(7px);
+    -webkit-backdrop-filter: blur(7px);
+}
+.dashboard-project-view-widget ul li{
+        display: flex
+;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+     margin-bottom: unset; 
+    border-bottom: 1px solid #dedede;
+    font-weight: 500;
+    font-size: 15px;
+    color: #000;
+}
+
+.dashboard-project-view-widget .dashboard-project-btns a{
+        width: 50%;
+    height: 38px;
+    background-color: #236c64;
+}
+
+.dashboard-card-third .dashboard-card-icon{
+    background-color:#c1a553   !important;
+}
+
+.circle-btns a{
+    width:45px !important;
+    height:45px !important;
+    border-radius:50%;
+}
+
+.circle-btns a:first-child{
+    background-color: #236c64;
+}
+

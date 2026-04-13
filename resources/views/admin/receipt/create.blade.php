@@ -1,0 +1,30 @@
+@extends('admin.layouts.app')
+@section('title')
+    Receipt
+@endsection
+@section('style')
+    @include('admin.scripts.css')
+@endsection
+@section('content')
+    <section class="section dashboard section-top-padding">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="page-title">
+                    <h3>Generate OR (original receipt )</h3>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12 mb-3">
+                <div class="main-table-container">
+                    @include('admin.receipt.form')
+                </div>
+            </div>
+        </div>
+    </section>
+@endsection
+
+@section('scripts')
+    @include('admin.scripts.script')
+    @include('admin.receipt.form-js')
+@endsection
