@@ -1,33 +1,37 @@
 @extends('admin.layouts.app')
 @section('content')
-<style>
-    .card{
-        border-radius:15px !important;
-    }
-    .card-body{
-        padding:0 15px;
-    }
-    .card h6{
-        color:#000 !important;
-        font-size:15px !important;
-        
-    }
-    .card span{
-        color:#000 !important;
-        font-size:25px !important;
-    }
-    .card i{
-           width: 60px;
-    height: 60px;
-    background-color: #c2230a;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 10px;
-    color: #fff ! Important;
-    font-size: 23px;
-    }
-</style>
+    <style>
+        .card {
+            border-radius: 15px !important;
+        }
+
+        .card-body {
+            padding: 0 15px;
+        }
+
+        .card h6 {
+            color: #000 !important;
+            font-size: 15px !important;
+
+        }
+
+        .card span {
+            color: #000 !important;
+            font-size: 25px !important;
+        }
+
+        .card i {
+            width: 60px;
+            height: 60px;
+            background-color: #c2230a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px;
+            color: #fff ! Important;
+            font-size: 23px;
+        }
+    </style>
 
     <section class="section dashboard section-top-padding">
         <div class="container">
@@ -54,25 +58,22 @@
                 @php
                     $user = auth()->user();
                 @endphp
-
-                <div class="col-md-6 mb-2">
-                    @if ($user && !$user->hasAnyRole(['Planner', 'Corp User']))
+                @if ($user && !$user->hasAnyRole(['Planner', 'Customer', 'Production Staff', 'Management Staff']))
+                    <div class="col-md-6 mb-2">
                         <a href="{{ route('admin.manage.company') }}" class="text-decoration-none">
-                    @endif
-                        <div class="card h-100 shadow-sm border-0 rounded-3">
-                            <div class="card-body d-flex align-items-center gap-3">
-                                <i class="fa-solid fa-building fa-2x text-success"></i>
-                                <div>
-                                    <h6 class="mb-1 text-success fw-semibold" style="font-size:0.9rem;">Total Customers</h6>
-                                    <span class="fw-bold text-success"
-                                        style="font-size:1.3rem;">{{ $totalCompanies ?? 0 }}</span>
+                            <div class="card h-100 shadow-sm border-0 rounded-3">
+                                <div class="card-body d-flex align-items-center gap-3">
+                                    <i class="fa-solid fa-building fa-2x text-success"></i>
+                                    <div>
+                                        <h6 class="mb-1 text-success fw-semibold" style="font-size:0.9rem;">Total Customers</h6>
+                                        <span class="fw-bold text-success"
+                                            style="font-size:1.3rem;">{{ $totalCompanies ?? 0 }}</span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        @if ($user && !$user->hasAnyRole(['Planner', 'Corp User']))
-                            </a>
-                        @endif
-                </div>
+                        </a>
+                    </div>
+                @endif
 
                 <div class="col-md-4">
                 </div>
@@ -176,25 +177,24 @@
                 </div>
 
                 <!-- Planner Documents -->
-                <div class="col-lg-4 mb-2">
-                    @if ($user && !$user->hasAnyRole(['Planner', 'Corp User']))
+                @if ($user && !$user->hasAnyRole(['Customer', 'Production Staff', 'Management Staff']))
+
+                    <div class="col-lg-4 mb-2">
                         <a href="{{ route('admin.planner-documents.index') }}" class="text-decoration-none">
-                    @endif
-                        <div class="card h-100 shadow-sm border-0 rounded-3">
-                            <div class="card-body d-flex align-items-center gap-3">
-                                <i class="fa-solid fa-file-alt fa-2x text-secondary"></i>
-                                <div>
-                                    <h6 class="mb-1 text-secondary fw-semibold" style="font-size:0.9rem;">Planner Documents
-                                    </h6>
-                                    <span class="fw-bold text-secondary"
-                                        style="font-size:1.3rem;">{{ $totalPlannerDocuments ?? 0 }}</span>
+                            <div class="card h-100 shadow-sm border-0 rounded-3">
+                                <div class="card-body d-flex align-items-center gap-3">
+                                    <i class="fa-solid fa-file-alt fa-2x text-secondary"></i>
+                                    <div>
+                                        <h6 class="mb-1 text-secondary fw-semibold" style="font-size:0.9rem;">Planner Documents
+                                        </h6>
+                                        <span class="fw-bold text-secondary"
+                                            style="font-size:1.3rem;">{{ $totalPlannerDocuments ?? 0 }}</span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        @if ($user && !$user->hasAnyRole(['Planner', 'Corp User']))
-                            </a>
-                        @endif
-                </div>
+                        </a>
+                    </div>
+                @endif
 
                 <!-- Planner Documents -->
                 <div class="col-lg-4 mb-2">

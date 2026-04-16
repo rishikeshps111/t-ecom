@@ -171,7 +171,7 @@ class QuotationController extends Controller implements HasMiddleware
         $totalGroups = Customer::get();
         $workPlans = WorkPlan::get();
         $workPlanData = WorkPlan::find($request->work_plan) ?? null;
-        $typeCode = $this->getTypeCode($workPlanData->company_type_id);
+        $typeCode = $this->getTypeCode($workPlanData->total_group_id);
         $code = Quotation::generateCompanyCode($typeCode);
         $planners = $this->getScopedPlanners();
         $staffs = $this->getScopedProductionStaff();
@@ -183,10 +183,10 @@ class QuotationController extends Controller implements HasMiddleware
     private function getTypeCode($companyTypeId): string
     {
         return match ((int) $companyTypeId) {
-            1 => 'SEC',   // Secretarial
-            2 => 'TAX',   // Taxation
-            3 => 'SST',   // Audit
-            4 => 'LOAN',  // Loan
+            1 => 'TTS',   // Secretarial
+            2 => 'TSS',   // Taxation
+            3 => 'TCS',   // Audit
+            4 => 'TIA',  // Loan
             default => 'ALL',
         };
     }

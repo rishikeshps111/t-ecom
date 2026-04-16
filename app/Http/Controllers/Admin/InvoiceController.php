@@ -173,7 +173,7 @@ class InvoiceController extends Controller implements HasMiddleware
         $currencies = Currency::get();
         $totalGroups = Customer::get();
         $workPlanData = WorkPlan::with('quotation')->find($request->work_plan) ?? null;
-        $typeCode = $this->getTypeCode($workPlanData->company_type_id);
+        $typeCode = $this->getTypeCode($workPlanData->total_group_id);
         $code = Invoice::generateCode($typeCode);
 
         return view('admin.invoice.create', compact('customers', 'companies', 'items', 'quotations', 'code', 'types', 'corpUsers', 'currencies', 'totalGroups', 'workPlanData'));
@@ -182,10 +182,10 @@ class InvoiceController extends Controller implements HasMiddleware
     private function getTypeCode($companyTypeId): string
     {
         return match ((int) $companyTypeId) {
-            1 => 'SEC',   // Secretarial
-            2 => 'TAX',   // Taxation
-            3 => 'SST',   // Audit
-            4 => 'LOAN',  // Loan
+            1 => 'TTS',   // Secretarial
+            2 => 'TSS',   // Taxation
+            3 => 'TCS',   // Audit
+            4 => 'TIA',  // Loan
             default => 'ALL',
         };
     }

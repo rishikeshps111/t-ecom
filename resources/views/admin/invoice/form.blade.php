@@ -96,7 +96,7 @@
             <label>Total Group</label>
             <select class="form-select" disabled>
                 <option>
-                    {{ $workPlanData->company->totalGroup->customer_name ?? $invoice->quotation->workPlan->company->totalGroup->customer_name ?? '' }}
+                    {{ ($workPlanData->company->totalGroup->customer_name ?? $workPlanData->totalGroup->customer_name) ?? $invoice->quotation->workPlan->company->totalGroup->customer_name ?? '' }}
                 </option>
             </select>
         </div>

@@ -6,14 +6,15 @@
     @include('admin.scripts.css')
 @endsection
 @section('content')
-<style>
-    .btn-top-filters button, .btn-top-filters a {
-    margin: 0 !important;
-    width: fit-content;
-    min-width: unset;
-    padding: 8px 15px;
-}
-</style>
+    <style>
+        .btn-top-filters button,
+        .btn-top-filters a {
+            margin: 0 !important;
+            width: fit-content;
+            min-width: unset;
+            padding: 8px 15px;
+        }
+    </style>
     <section class="section dashboard section-top-padding">
         <div class="row">
             <div class="col-lg-12">
@@ -185,6 +186,7 @@
                             </div>
 
                         </div>
+                        @role(['Super Admin', 'Admin', 'Management Staff', 'Production Staff', 'Planner'])
                         <div class="row mt-3">
                             <div class="col-lg-12">
                                 <div class="plan-commision-2-cs report-2-cs">
@@ -216,6 +218,7 @@
                                 </div>
                             </div>
                         </div>
+                        @endrole
                     </div>
                 </div>
             </div>

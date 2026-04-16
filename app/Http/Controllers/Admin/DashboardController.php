@@ -40,7 +40,7 @@ class DashboardController extends Controller
         $toDateEnd = $toDate . ' 23:59:59';
 
         $data = [
-            'totalCustomers' => User::role('Corp User')->whereBetween('created_at', [$fromDate, $toDateEnd])->count(),
+            'totalCustomers' => User::role('Customer')->whereBetween('created_at', [$fromDate, $toDateEnd])->count(),
             'totalCompanies' => Company::whereBetween('created_at', [$fromDate, $toDateEnd])->count(),
             'totalInvoices' => Invoice::whereBetween('created_at', [$fromDate, $toDateEnd])->count(),
             'totalQuotations' => Quotation::whereBetween('created_at', [$fromDate, $toDateEnd])->count(),

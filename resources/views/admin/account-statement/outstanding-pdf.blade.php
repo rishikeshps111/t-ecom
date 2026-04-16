@@ -185,6 +185,7 @@
             <div><strong>TOTAL PAID:</strong> {{ number_format($totalPaidAmount, 2) }}</div>
             <div><strong>TOTAL BALANCE:</strong> {{ number_format($totalBalanceAmount, 2) }}</div>
         </div>
+        @role(['Super Admin', 'Admin', 'Management Staff', 'Production Staff', 'Planner'])
 
         <!-- Planner Block (col-4) -->
         <div style=" padding: 10px; text-align: center; float:left; width:30%; margin:0 5px; height:130px;">
@@ -204,6 +205,9 @@
             <div style="margin:5px 0;"><strong>Paid:</strong> {{ number_format($totalPsPaid, 2) }}</div>
             <div style="margin:5px 0;"><strong>Pending:</strong> {{ number_format($totalPsPending, 2) }}</div>
         </div>
+
+        @endrole
+
 
     </div>
 

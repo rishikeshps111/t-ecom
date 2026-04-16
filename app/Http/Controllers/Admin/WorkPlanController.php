@@ -706,10 +706,10 @@ class WorkPlanController extends Controller implements HasMiddleware
     private function getTypeCode($companyTypeId): string
     {
         return match ((int) $companyTypeId) {
-            1 => 'SEC',   // Secretarial
-            2 => 'TAX',   // Taxation
-            3 => 'SST',   // Audit
-            4 => 'LOAN',  // Loan
+            1 => 'TTS',   // Secretarial
+            2 => 'TSS',   // Taxation
+            3 => 'TCS',   // Audit
+            4 => 'TIA',  // Loan
             default => 'ALL',
         };
     }

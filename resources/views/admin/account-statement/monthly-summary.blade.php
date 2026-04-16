@@ -140,6 +140,7 @@
                                     </div>
                                 </div>
                             </div>
+                            @role(['Super Admin', 'Admin', 'Management Staff', 'Production Staff', 'Planner'])
                             <div class="col-xl-3 col-lg-4 col-md-6 mb-3">
                                 <div class="acd-card bg8">
                                     <div>
@@ -156,6 +157,7 @@
                                     </div>
                                 </div>
                             </div>
+                            @endrole
                         </div>
                     </div>
                     <div class="row">

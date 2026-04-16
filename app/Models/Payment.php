@@ -59,7 +59,7 @@ class Payment extends Model
             $prefix = 'OR';
             $year   = active_financial_year_start();;
             $number = str_pad($this->id, 5, '0', STR_PAD_LEFT);
-            $typeCode = $this->getTypeCode($this->invoice->quotation->workPlan->company_type_id);
+            $typeCode = $this->getTypeCode($this->invoice->quotation->workPlan->total_group_id);
             // Example: PAY/SEC/2026#0001
             return $prefix . '/' . $typeCode . '/' . $year . '-' . $number;
         });
@@ -68,10 +68,10 @@ class Payment extends Model
     private function getTypeCode($companyTypeId): string
     {
         return match ((int) $companyTypeId) {
-            1 => 'SEC',   // Secretarial
-            2 => 'TAX',   // Taxation
-            3 => 'SST',   // Audit
-            4 => 'LOAN',  // Loan
+            1 => 'TTS',   // Secretarial
+            2 => 'TSS',   // Taxation
+            3 => 'TCS',   // Audit
+            4 => 'TIA',  // Loan
             default => 'ALL',
         };
     }

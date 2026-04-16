@@ -211,6 +211,8 @@
                                 Back
                             </a>
                         @endif
+                        @role(['Super Admin', 'Admin', 'Management Staff', 'Production Staff', 'Planner'])
+
                         @if (!$receipt->plannerPayout)
                             @can('or.edit')
                                 <button class="add-btn planner-payout" data-id="{{ $receipt->id }}"
@@ -241,6 +243,8 @@
                                 Production Commission Paid
                             </button>
                         @endif
+                        @endrole
+
                     </div>
                 </div>
             </div>

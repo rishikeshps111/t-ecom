@@ -176,6 +176,8 @@
                 style="padding-bottom:7px; border-bottom:1px solid #ccc; font-size:12px !important; margin:7px 0 7px 10px; font-weight:600;">
                 Total Debit Note Amount:<br> <span style="font-weight:400;">RM
                     {{ number_format($summary['totalDebit'], 2) }}</span></p>
+            @role(['Super Admin', 'Admin', 'Management Staff', 'Production Staff', 'Planner'])
+
             <p
                 style="padding-bottom:7px; border-bottom:1px solid #ccc; font-size:12px !important; margin:7px 0 7px 10px; font-weight:600;">
                 Total Planner Commission:<br> <span style="font-weight:400;">RM
@@ -184,6 +186,8 @@
                 style="padding-bottom:7px; border-bottom:1px solid #ccc; font-size:12px !important; margin:7px 0 7px 10px; font-weight:600;">
                 Total Production Commission:<br> <span style="font-weight:400;">RM
                     {{ number_format($summary['totalProduction'], 2) }}</span></p>
+            @endrole
+
         </div>
 
     </div>

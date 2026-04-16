@@ -145,12 +145,12 @@
         }
     });
 
-    $('#company_type_id').on('change', function () {
-        let typeId = $(this).val();
-        if (!typeId) return;
+    $('#total_group_id').on('change', function () {
+        let id = $(this).val();
+        if (!id) return;
 
         $.get("{{ route('admin.work-orders.generate-code') }}", {
-            company_type_id: typeId
+            company_type_id: id
         }, function (res) {
             $('input[name="workplan_number"]').val(res.code);
         });

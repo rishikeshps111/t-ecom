@@ -98,21 +98,21 @@ class ReceiptController extends Controller implements HasMiddleware
         }
         $lastReceiptId = Payment::max('id') ?? 0;
         $nextReceiptId = $lastReceiptId + 1;
-        $typeCode = $this->getTypeCode($invoice->quotation->workPlan->company_type_id);
+        $typeCode = $this->getTypeCode($invoice->quotation->workPlan->total_group_id);
         $receiptNumber = Payment::generateReceiptNumber($nextReceiptId, $typeCode);
         $workPlanData = $request->work_plan ?? null;
         $inv = $request->inv_id ?? null;
 
-        return view('admin.receipt.create', compact('invoice', 'receiptNumber', 'workPlanData'));
+        return view('admin.receipt.create', compact('invoice', 'receiptNumber', 'workPlanData', 'typeCode'));
     }
 
     private function getTypeCode($companyTypeId): string
     {
         return match ((int) $companyTypeId) {
-            1 => 'SEC',   // Secretarial
-            2 => 'TAX',   // Taxation
-            3 => 'SST',   // Audit
-            4 => 'LOAN',  // Loan
+            1 => 'TTS',   // Secretarial
+            2 => 'TSS',   // Taxation
+            3 => 'TCS',   // Audit
+            4 => 'TIA',  // Loan// Loan
             default => 'ALL',
         };
     }
