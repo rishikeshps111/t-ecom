@@ -236,8 +236,12 @@
                                 <ul>
                                     <li class="bg1">Planner Commission : <span>RM
                                             {{ $workOrder->quotation->planner_commission ?? '-' }}</span></li>
-                                    <li class="bg2">Bill to P% : <span>
-                                            {{ $workOrder->quotation->p_bill_percentage ?? '-' }}%</span></li>
+                                    <li class="bg2">
+                                        Bill to P% :
+                                        <span>
+                                            {{ number_format($workOrder->quotation->p_bill_percentage ?? 0, 2) }}%
+                                        </span>
+                                    </li>
                                     @if ($workOrder->quotation)
                                         <li class="bg1">
                                             Production Commission :
@@ -1965,11 +1969,11 @@
             Swal.fire({
                 title: 'Change Note Status',
                 html: `
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <select id="noteStatus" class="form-select">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <option value="active">Active</option>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <option value="closed">Closed</option>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </select>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        `,
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <select id="noteStatus" class="form-select">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <option value="active">Active</option>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <option value="closed">Closed</option>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </select>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                `,
                 confirmButtonText: 'Update',
                 showCancelButton: true,
                 didOpen: () => {

@@ -4,9 +4,8 @@
     <input type="hidden" name="id" value="{{ $record->id }}">
 
     @php
-        $amountToPay = $record->amount * ($record->invoice->quotation->workPlan->planner->planner_c_percentage / 100);
+        $amountToPay = $record->amount * ($record->invoice->quotation->p_bill_percentage / 100);
     @endphp
-
     <div class="modal-card-cs-announse">
         <div class="row">
 
