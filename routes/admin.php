@@ -2,11 +2,16 @@
 
 use App\Http\Controllers\Admin\AccountStatementController;
 use App\Http\Controllers\Admin\ActivityLogController;
+use App\Http\Controllers\Admin\AllDocumentManagerController;
 use App\Http\Controllers\Admin\AnnouncementController;
 use App\Http\Controllers\Admin\BillerProfileController;
 use App\Http\Controllers\Admin\BusinessUserController;
 use App\Http\Controllers\Admin\ChatCategoryController;
 use App\Http\Controllers\Admin\CompanyMessageController;
+use App\Http\Controllers\Admin\CompanyAllFileController;
+use App\Http\Controllers\Admin\CompanyDocumentController;
+use App\Http\Controllers\Admin\CompanyPlannerDocumentController;
+use App\Http\Controllers\Admin\CompanyWorkOrderDocumentController;
 use App\Http\Controllers\Admin\CompanyTypeController;
 use App\Http\Controllers\Admin\CreditNoteController;
 use App\Http\Controllers\Admin\CurrencyController;
@@ -278,6 +283,30 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     // web.php
     Route::post('users/{user}/lock', [UserManagementController::class, 'lock'])->name('admin.user.lock');
     Route::post('users/{user}/unlock', [UserManagementController::class, 'unlock'])->name('admin.user.unlock');
+
+    Route::get('document-manger/{company}/documents', [CompanyDocumentController::class, 'index'])
+        ->name('document-manger.documents.index');
+    Route::post('document-manger/{company}/documents', [CompanyDocumentController::class, 'store'])
+        ->name('document-manger.documents.store');
+    Route::get('document-manger/{company}/documents/{companyDocument}/download', [CompanyDocumentController::class, 'download'])
+        ->name('document-manger.documents.download');
+    Route::delete('document-manger/{company}/documents/{companyDocument}', [CompanyDocumentController::class, 'destroy'])
+        ->name('document-manger.documents.destroy');
+    Route::get('document-manger/{company}/planner-documents', [CompanyPlannerDocumentController::class, 'index'])
+        ->name('document-manger.planner-documents.index');
+    Route::get('document-manger/{company}/planner-documents/{plannerDocumentFile}/download', [CompanyPlannerDocumentController::class, 'download'])
+        ->name('document-manger.planner-documents.download');
+    Route::get('document-manger/{company}/all-files', [CompanyAllFileController::class, 'index'])
+        ->name('document-manger.all-files.index');
+    Route::get('document-manger/{company}/all-files/download-zip', [CompanyAllFileController::class, 'downloadZip'])
+        ->name('document-manger.all-files.download-zip');
+    Route::post('document-manger/{company}/all-files/export-selected', [CompanyAllFileController::class, 'exportSelected'])
+        ->name('document-manger.all-files.export-selected');
+    Route::get('document-manger/{company}/work-order-documents', [CompanyWorkOrderDocumentController::class, 'index'])
+        ->name('document-manger.work-order-documents.index');
+    Route::get('document-manger/{company}/work-order-documents/{workPlanAttachment}/download', [CompanyWorkOrderDocumentController::class, 'download'])
+        ->name('document-manger.work-order-documents.download');
+    Route::get('document-manger', [AllDocumentManagerController::class, 'index'])->name('document-manger.index');
 });
 
 

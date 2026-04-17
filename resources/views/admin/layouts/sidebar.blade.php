@@ -324,7 +324,7 @@
                                 </li>
                             @endcan
                             @can('document.view')
-                                @role(['Super Admin','Planner'])
+                                @role(['Super Admin', 'Planner'])
                                     <li>
                                         <a href="{{ route('admin.planner-documents.index') }}"
                                             class="{{ request()->routeIs('admin.planner-documents.index') ? 'active' : '' }}">
@@ -336,6 +336,15 @@
                         </ul>
                     </li>
                 @endcanany
+                @role(['Super Admin'])
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('admin.document-manger.*') ? 'active' : '' }}"
+                            href="{{ route('admin.document-manger.index') }}">
+                            <i class="fa-solid fa-file"></i>
+                            <span>Document Manager </span>
+                            <span class="badge bg-danger ms-1 blink">New</span> </a>
+                    </li>
+                @endrole
                 @can('message.view')
                     <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('admin.messages.*') ? 'active' : '' }}"
@@ -349,6 +358,7 @@
                         </a>
                     </li>
                 @endcan
+
                 @role(['Super Admin', 'Admin'])
                     @can('announcement.view')
                         <li class="nav-item">

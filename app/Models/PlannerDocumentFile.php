@@ -22,4 +22,9 @@ class PlannerDocumentFile extends Model
     {
         return $this->belongsTo(PlannerDocument::class, 'planner_document_id');
     }
+
+    public function plannerDocument()
+    {
+        return $this->belongsTo(PlannerDocument::class, 'planner_document_id');
+    }
 }

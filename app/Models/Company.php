@@ -133,6 +133,16 @@ class Company extends Model
         return $this->hasMany(Document::class);
     }
 
+    public function workPlans()
+    {
+        return $this->hasMany(WorkPlan::class);
+    }
+
+    public function companyDocuments()
+    {
+        return $this->hasMany(CompanyDocument::class);
+    }
+
     public function users()
     {
         return $this->belongsToMany(
