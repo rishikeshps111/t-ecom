@@ -54,7 +54,7 @@ class Company extends Model
     protected static function booted()
     {
         static::addGlobalScope('assignedCompanies', function (Builder $builder) {
-            if (Auth::check() && (Auth::user()->hasRole('Corp User') || Auth::user()->hasRole('Customer'))) {
+            if (Auth::check() && (Auth::user()->hasRole('Customer') || Auth::user()->hasRole('Customer'))) {
                 // $builder->whereHas('businessUser', function ($q) {
                 //     $q->where('users.id', Auth::id());
                 // });

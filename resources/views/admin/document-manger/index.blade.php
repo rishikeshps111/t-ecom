@@ -38,6 +38,17 @@
                             </div>
                         </div>
                         <div class="col-lg-3">
+                            <div class="o-f-inp">
+                                <label for="filter-total-group">Filter by Total Group</label>
+                                <select id="filter-total-group" class="form-select shadow-none search-select">
+                                    <option value="">--- Select ---</option>
+                                    @foreach ($totalGroups as $totalGroup)
+                                        <option value="{{ $totalGroup->id }}">{{ $totalGroup->customer_name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-2">
                             <div class="btn-top-filters">
                                 <button type="button" class="btn-back-cs" id="reset-filters">Reset</button>
                             </div>
@@ -84,6 +95,7 @@
                     data: function (d) {
                         d.search_term = $('#filter-search').val();
                         d.status = $('#filter-status').val();
+                        d.total_group = $('#filter-total-group').val();
                     }
                 },
                 columns: [
@@ -96,13 +108,14 @@
                 ]
             });
 
-            $('#filter-search, #filter-status').on('keyup change', function () {
+            $('#filter-search, #filter-status, #filter-total-group').on('keyup change', function () {
                 table.draw();
             });
 
             $('#reset-filters').on('click', function () {
                 $('#filter-search').val('');
                 $('#filter-status').val('').trigger('change');
+                $('#filter-total-group').val('').trigger('change');
                 table.draw();
             });
         });

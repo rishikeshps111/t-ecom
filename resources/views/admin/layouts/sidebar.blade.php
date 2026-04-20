@@ -336,15 +336,13 @@
                         </ul>
                     </li>
                 @endcanany
-                @role(['Super Admin'])
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('admin.document-manger.*') ? 'active' : '' }}"
-                            href="{{ route('admin.document-manger.index') }}">
-                            <i class="fa-solid fa-file"></i>
-                            <span>Document Manager </span>
-                            <span class="badge bg-danger ms-1 blink">New</span> </a>
-                    </li>
-                @endrole
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('admin.document-manger.*') ? 'active' : '' }}"
+                        href="{{ route('admin.document-manger.index') }}">
+                        <i class="fa-solid fa-file"></i>
+                        <span>Document Manager </span>
+                        <span class="badge bg-danger ms-1 blink">New</span> </a>
+                </li>
                 @can('message.view')
                     <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('admin.messages.*') ? 'active' : '' }}"

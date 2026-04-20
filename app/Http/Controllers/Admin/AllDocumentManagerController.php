@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Company;
+use App\Models\Customer;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -11,8 +12,15 @@ class AllDocumentManagerController extends Controller
 {
     public function index(Request $request)
     {
+        $totalGroups = Customer::orderBy('customer_name', 'asc')
+            ->get();
+
         if ($request->ajax()) {
-            $records = Company::orderBy('id', 'desc');
+            $records = Company::with([
+                'totalGroup' => function ($query) {
+                    $query->withoutGlobalScope('exclude_default');
+                }
+            ])->orderBy('id', 'desc');
 
             if ($request->filled('search_term')) {
                 $search = trim($request->search_term);
@@ -27,6 +35,10 @@ class AllDocumentManagerController extends Controller
 
             if ($request->filled('status')) {
                 $records->where('status', $request->status);
+            }
+
+            if ($request->filled('total_group')) {
+                $records->where('total_group_id', $request->total_group);
             }
 
             return DataTables::eloquent($records)
@@ -54,6 +66,6 @@ class AllDocumentManagerController extends Controller
                 ->rawColumns(['actions', 'status'])
                 ->make(true);
         }
-        return view('admin.document-manger.index');
+        return view('admin.document-manger.index', compact('totalGroups'));
     }
 }
