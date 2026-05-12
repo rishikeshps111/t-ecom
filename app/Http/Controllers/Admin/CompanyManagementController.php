@@ -27,7 +27,7 @@ class CompanyManagementController extends Controller implements HasMiddleware
     {
         return [
             'auth',
-            new Middleware('role:Super Admin', ['index', 'create', 'store', 'edit', 'update', 'destroy', 'view', 'export', 'statusView', 'status', 'notes']),
+            new Middleware('role:Super Admin,Planner,Production Staff', ['index', 'create', 'store', 'edit', 'update', 'destroy', 'view', 'export', 'statusView', 'status', 'notes']),
         ];
     }
 

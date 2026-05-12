@@ -75,6 +75,8 @@
             let customer = $('#filter-cus').val();
             let planner = $('#filter-planner').val();
             let production = $('#filter-production').val();
+            let total = $('#filter-total').val();
+
 
             let url = "{{ route('admin.account-statements.outstanding-export') }}"
                 + "?from_date=" + from
@@ -82,7 +84,8 @@
                 + "&company=" + company
                 + "&customer=" + customer
                 + "&planner=" + planner
-                + "&production=" + production;
+                + "&production=" + production
+                + "&total_group=" + total;
 
             window.open(url, '_blank');
         });
@@ -104,7 +107,7 @@
                 + "&company=" + company
                 + "&customer=" + customer
                 + "&planner=" + planner
-                + "&total=" + total
+                + "&total_group=" + total
                 + "&production=" + production;
 
             window.open(url, '_blank');

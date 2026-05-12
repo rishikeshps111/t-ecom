@@ -15,6 +15,8 @@ class CompanyDocument extends Model
     protected $fillable = [
         'company_id',
         'title',
+        'total_group_id',
+        'financial_year_id',
         'type',
         'file',
     ];
@@ -63,6 +65,16 @@ class CompanyDocument extends Model
     public function company()
     {
         return $this->belongsTo(Company::class);
+    }
+
+    public function totalGroup()
+    {
+        return $this->belongsTo(Customer::class, 'total_group_id');
+    }
+
+    public function financialYear()
+    {
+        return $this->belongsTo(FinancialYear::class);
     }
 
     protected function fileName(): Attribute

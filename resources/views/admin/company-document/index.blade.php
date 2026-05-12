@@ -106,6 +106,8 @@
                                             <tr>
                                                 <th class="text-center">SL NO</th>
                                                 <th class="text-center">Title</th>
+                                                <th class="text-center">Total Group</th>
+                                                <th class="text-center">Financial Year</th>
                                                 <th class="text-center">Document Type</th>
                                                 <th class="text-center">Uploaded On</th>
                                                 <th class="text-center">Action</th>
@@ -138,6 +140,35 @@
                                 <label for="title" class="form-label">Title</label>
                                 <input type="text" name="title" id="title" class="form-control shadow-none">
                                 <span class="text-danger small title_error"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="total_group_id" class="form-label">Total Group <span class="text-danger">*</span></label>
+                                <select name="total_group_id" id="total_group_id"
+                                    class="form-select shadow-none search-select modal-select">
+                                    <option value="">--- Select ---</option>
+                                    @foreach ($totalGroups as $totalGroup)
+                                        <option value="{{ $totalGroup->id }}">
+                                            {{ $totalGroup->customer_name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <span class="text-danger small total_group_id_error"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="financial_year_id" class="form-label">Financial Year <span class="text-danger">*</span></label>
+                                <select name="financial_year_id" id="financial_year_id"
+                                    class="form-select shadow-none search-select modal-select">
+                                    <option value="">--- Select ---</option>
+                                    @foreach ($financialYears as $financialYear)
+                                        <option value="{{ $financialYear->id }}"
+                                            {{ (string) $activeFinancialYearId === (string) $financialYear->id ? 'selected' : '' }}>
+                                            {{ $financialYear->year }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <span class="text-danger small financial_year_id_error"></span>
                             </div>
 
                             <div class="mb-3">
@@ -185,6 +216,17 @@
     @include('admin.scripts.script')
     <script>
         $(function () {
+            $('#addDocumentModal .modal-select').each(function () {
+                if ($(this).hasClass('select2-hidden-accessible')) {
+                    $(this).select2('destroy');
+                }
+
+                $(this).select2({
+                    dropdownParent: $('#addDocumentModal'),
+                    width: '100%'
+                });
+            });
+
             let table = $('#table').DataTable({
                 processing: true,
                 serverSide: true,
@@ -197,6 +239,8 @@
                 columns: [
                     { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
                     { data: 'title', name: 'title' },
+                    { data: 'total_group', name: 'total_group', orderable: false, searchable: false },
+                    { data: 'financial_year', name: 'financial_year', orderable: false, searchable: false },
                     { data: 'type', name: 'type' },
                     { data: 'created_at', name: 'created_at' },
                     { data: 'actions', name: 'actions', orderable: false, searchable: false }
@@ -230,6 +274,8 @@
                     contentType: false,
                     success: function (response) {
                         form[0].reset();
+                        $('#total_group_id').val('').trigger('change');
+                        $('#financial_year_id').val('{{ $activeFinancialYearId }}').trigger('change');
                         $('#type').val('').trigger('change');
                         $('#addDocumentModal').modal('hide');
                         table.ajax.reload();

@@ -761,9 +761,12 @@ class AccountStatementController extends Controller implements HasMiddleware
                 $records->where('planner_id', $request->planner);
             }
             if ($request->filled('from_date') && $request->filled('to_date')) {
+
+                $fromDate = Carbon::parse($request->from_date)->subDay(); // minus 1 day
+                $toDate   = Carbon::parse($request->to_date)->addDay();
                 $records->whereBetween('created_at', [
-                    $request->from_date,
-                    $request->to_date
+                    $fromDate,
+                    $toDate
                 ]);
             }
             if ($request->filled('customer')) {

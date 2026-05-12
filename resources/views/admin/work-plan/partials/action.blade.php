@@ -35,16 +35,19 @@
             @can('wo.delete')
                 @if($row->status != 'approved' && $row->status != 'closed' && $row->status != 'rejected')
                     <li>
-                        {{-- <button class="dropdown-item text-danger" onclick="deleteRow('{{ $row->id }}')">
-                            <i class="fa-solid fa-trash me-2"></i>
-                            Delete WO
-                        </button> --}}
+
                         <button class="dropdown-item text-danger reject-order" data-id="{{ $row->id }}">
                             <i class="fa-solid fa-ban me-2"></i>
                             Reject WO
                         </button>
                     </li>
                 @endif
+                @can('wo.edit')
+                    <button class="dropdown-item text-danger" onclick="deleteRow('{{ $row->id }}')">
+                        <i class="fa-solid fa-trash me-2"></i>
+                        Delete WO
+                    </button>
+                @endcan
             @endcan
             @can('wo.view')
                 @if($row->status == 'closed')
@@ -74,6 +77,12 @@
                         Rejection Reason
                     </button>
                 </li>
+                {{-- @can('wo.edit')
+                    <button class="dropdown-item text-danger" onclick="deleteRow('{{ $row->id }}')">
+                        <i class="fa-solid fa-trash me-2"></i>
+                        Delete WO
+                    </button>
+                @endcan --}}
             @endif
 
             @if($row->status == 'approved')
@@ -92,9 +101,9 @@
                 {{-- <li>
                     <a class="dropdown-item"
                         href="{{ route_with_query('admin.quotations.edit', [
-                                                                                                                                                                                                                                                                                                                    'quotation' => $row->quotation->id,
-                                                                                                                                                                                                                                                                                                                    'work_plan' => $row->id
-                                                                                                                                                                                                                                                                                                                ]) }}">
+                                                                                                                                                                                                                                                                                                                                            'quotation' => $row->quotation->id,
+                                                                                                                                                                                                                                                                                                                                            'work_plan' => $row->id
+                                                                                                                                                                                                                                                                                                                                        ]) }}">
                         <i class="fa-solid fa-file-invoice me-2 text-primary"></i>
                         View Quotation
                     </a>

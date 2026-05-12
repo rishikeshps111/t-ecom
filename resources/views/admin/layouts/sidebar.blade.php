@@ -44,7 +44,7 @@
                                     class="{{ request()->routeIs('admin.manage.user') && request()->get('type') == 'production' ? 'active' : '' }}">
                                     <i class="fa-solid fa-arrow-up-right-from-square"></i><span>Production Staff <span
                                             class="badge bg-primary ms-1">
-                                            {{ \App\Models\User::role('Production Staff')->count() }}</span>
+                                            {{ \App\Models\User::where('user_type', 'production')->whereNotIn('name', ['Default'])->count() }}</span>
                                     </span>
                                 </a>
                             </li>
@@ -70,7 +70,7 @@
                                     class="{{ request()->routeIs('admin.manage.planner') ? 'active' : '' }}">
                                     <i class="fa-solid fa-arrow-up-right-from-square"></i><span>Planner<span
                                             class="badge bg-primary ms-1">
-                                            {{ \App\Models\User::role('Planner')->count() }}</span></span>
+                                            {{ \App\Models\User::role('Planner')->whereNotIn('name', ['Default'])->count() }}</span></span>
                                 </a>
                             </li>
                             <li>
@@ -90,7 +90,7 @@
                         </ul>
                     </li>
                 @endrole
-                @role('Super Admin')
+                @role(['Super Admin','Planner','Production Staff'])
                     <li class="nav-item">
                         <a class="nav-link " href="{{ route('admin.manage.company') }}">
                             <i class="fa-solid fa-city"></i>

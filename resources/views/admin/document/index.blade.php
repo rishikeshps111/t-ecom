@@ -48,7 +48,7 @@
                             <div class="o-f-inp">
                                 <label>From Date</label>
                                 <input type="date" id="filter-from-date" class="form-control shadow-none"
-                                    value="{{ now()->subDays(30)->toDateString() }}">
+                                    value="{{ now()->subDays(90)->toDateString() }}">
                             </div>
                         </div>
                         <div class="col-lg-3 mb-2">
