@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -73,6 +74,9 @@ class AuthController extends Controller
     public function update(Request $request)
     {
         $user = Auth::user();
+        $phone = preg_replace('/\D+/', '', $request->input('phone', ''));
+        $phone = Str::startsWith($phone, '60') ? '+' . $phone : '+60' . $phone;
+        $request->merge(['phone' => $phone]);
 
         $request->validate([
             'name'          => 'required|string|max:255',
@@ -82,6 +86,7 @@ class AuthController extends Controller
             ],
             'email'         => 'required|email|unique:users,email,' . $user->id,
             'profile_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'remove_profile_image' => 'nullable|boolean',
         ]);
 
         $user->name  = $request->name;
@@ -100,8 +105,18 @@ class AuthController extends Controller
             $user->profile_image = 'uploads/profile/' . $imageName;
         }
 
+        if ($request->boolean('remove_profile_image') && !$request->hasFile('profile_image')) {
+            if ($user->profile_image && file_exists(public_path($user->profile_image))) {
+                unlink(public_path($user->profile_image));
+            }
+
+            $user->profile_image = null;
+        }
+
         $user->save();
-        return back()->with('success', 'Profile updated successfully.');
+        return back()
+            ->with('success', 'Profile updated successfully.')
+            ->with('profile_tab', 'profile');
     }
 
     public function changePassword(Request $request)
@@ -114,14 +129,18 @@ class AuthController extends Controller
         $user = Auth::user();
 
         if (!Hash::check($request->current_password, $user->password)) {
-            return back()->withErrors(['current_password' => 'Current password is incorrect.']);
+            return back()
+                ->withErrors(['current_password' => 'Current password is incorrect.'])
+                ->with('profile_tab', 'password');
         }
 
         $user->update([
-            'password' => bcrypt($request->new_password),
+            'password' => $request->new_password,
             'show_password' => $request->new_password
         ]);
 
-        return back()->with('success', 'Password changed successfully.');
+        return back()
+            ->with('success', 'Password changed successfully.')
+            ->with('profile_tab', 'password');
     }
 }
