@@ -65,14 +65,19 @@
         </span>
 
         <span style="display:inline-block; margin-left:25px; font-size:13px">
+            <strong>Customer User:</strong>
+            {{ $cusUser->name ?? 'All' }}
+        </span>
+
+        <span style="display:inline-block; margin-left:25px; font-size:13px">
             <strong>Planner:</strong>
             {{ $planner->name ?? 'All' }}
         </span>
 
-        {{-- <span style="display:inline-block; margin-left:25px; font-size:13px">
-            <strong>Customer:</strong>
-            {{ $cusUser->name ?? 'All' }}
-        </span> --}}
+        <span style="display:inline-block; margin-left:25px; font-size:13px">
+            <strong>Production Staff:</strong>
+            {{ $production->name ?? 'All' }}
+        </span>
     </div>
     <p style="width: 100%; margin-bottom: 40px; float:unset;font-size:13px">
         <span style="float:left; color:red;"><strong style="color:black;">From:</strong>
@@ -87,7 +92,9 @@
         <thead>
             <tr>
                 <th>No</th>
-                <th>Customer</th>
+                @unless($hideCustomerColumn)
+                    <th>Customer</th>
+                @endunless
                 {{-- <th>Planner</th> --}}
                 <th>Invoice</th>
                 <th>OR</th>
@@ -107,9 +114,11 @@
 
                     <td style="text-align:center;">{{ $i + 1 }}</td>
 
-                    <td style="text-align:center;">
-                        {{ $row->invoice?->quotation?->workPlan?->company?->company_name }}
-                    </td>
+                    @unless($hideCustomerColumn)
+                        <td style="text-align:center;">
+                            {{ $row->invoice?->quotation?->workPlan?->company?->company_name }}
+                        </td>
+                    @endunless
 
                     {{-- <td style="text-align:center;">
                         {{ $row->invoice?->quotation?->workPlan?->company?->planner?->user_code }}

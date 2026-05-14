@@ -853,10 +853,10 @@ class AccountStatementController extends Controller implements HasMiddleware
         }
 
         if ($request->from_date && $request->to_date) {
-            $records->whereBetween('created_at', [
-                $request->from_date,
-                $request->to_date
-            ]);
+            $fromDate = Carbon::parse($request->from_date)->subDay()->startOfDay();
+            $toDate = Carbon::parse($request->to_date)->addDay()->endOfDay();
+
+            $records->whereBetween('created_at', [$fromDate, $toDate]);
         }
 
         if ($request->customer) {
@@ -1700,6 +1700,27 @@ class AccountStatementController extends Controller implements HasMiddleware
                     $request->to_date
                 ]);
             }
+            if ($request->filled('company')) {
+                $records->whereRelation('invoice.quotation.workPlan', 'company_id', $request->company);
+            }
+
+            // Planner filter
+            if ($request->filled('planner')) {
+                $records->whereRelation('invoice.quotation.workPlan.company', 'planner_id', $request->planner);
+            }
+
+            if ($request->filled('total')) {
+                $records->whereRelation('invoice.quotation.workPlan', 'total_group_id', $request->total);
+            }
+
+            if ($request->filled('customer')) {
+                $records->whereHas(
+                    'invoice.quotation.workPlan.company.userCompanies',
+                    function ($q) use ($request) {
+                        $q->where('user_id', $request->customer);
+                    }
+                );
+            }
             $totalAmount = (clone $records)
                 ->get()
                 ->sum(fn($payment) => $payment->amount ?? 0);
@@ -2198,17 +2219,19 @@ class AccountStatementController extends Controller implements HasMiddleware
     public function outstandingPdf(Request $request)
     {
         $records = Payment::orderBy('created_at', 'desc');
-        $totalGroup = null;
-        if ($request->total_group) {
-            $totalGroup = Customer::find($request->total_group);
+        $totalGroupId = $request->input('total_group', $request->input('total'));
+
+        if ($totalGroupId) {
+            $totalGroup = Customer::find($totalGroupId);
         } else {
             $totalGroup = Customer::withoutGlobalScope('exclude_default')->where('customer_name', 'Default')->first();
         }
-        $company = $request->company ? Customer::find($request->company) : null;
+
+        $company = $request->company ? Company::find($request->company) : null;
         $planner = $request->planner ? User::find($request->planner) : null;
         $cusUser = $request->customer ? User::find($request->customer) : null;
-
-
+        $production = $request->production ? User::find($request->production) : null;
+        $hideCustomerColumn = $request->filled('company') || $request->filled('customer');
 
 
         if ($request->filled('from_date') && $request->filled('to_date')) {
@@ -2222,13 +2245,17 @@ class AccountStatementController extends Controller implements HasMiddleware
             $records->whereRelation('invoice.quotation.workPlan', 'company_id', $request->company);
         }
 
-        if ($request->filled('total')) {
-            $records->whereRelation('invoice.quotation.workPlan', 'total_group_id', $request->total);
+        if ($totalGroupId) {
+            $records->whereRelation('invoice.quotation.workPlan', 'total_group_id', $totalGroupId);
         }
 
         // Planner filter
         if ($request->filled('planner')) {
             $records->whereRelation('invoice.quotation.workPlan.company', 'planner_id', $request->planner);
+        }
+
+        if ($request->filled('production')) {
+            $records->whereRelation('invoice.quotation.workPlan.company', 'production_staff_id', $request->production);
         }
 
         if ($request->filled('customer')) {
@@ -2324,7 +2351,9 @@ class AccountStatementController extends Controller implements HasMiddleware
                 'totalGroup',
                 'company',
                 'planner',
-                'cusUser'
+                'cusUser',
+                'production',
+                'hideCustomerColumn'
             )
         )->setPaper('a4', 'landscape');
 
@@ -2343,6 +2372,12 @@ class AccountStatementController extends Controller implements HasMiddleware
             'totalPsPaid',
             'totalPsPending',
             'pendingInvoices',
+            'totalGroup',
+            'company',
+            'planner',
+            'cusUser',
+            'production',
+            'hideCustomerColumn',
         ));
     }
 
