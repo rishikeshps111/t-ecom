@@ -169,6 +169,8 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
         ->name('work-orders.attachments.store');
     Route::post('/work-orders/{workOrder}/notes', [WorkPlanController::class, 'storeNote'])
         ->name('work-orders.notes.store');
+    Route::post('/work-orders/{workOrder}/send-document-pdf', [WorkPlanController::class, 'sendDocumentPdf'])
+        ->name('work-orders.send-document-pdf');
     Route::post('/work-orders/{workOrder}/api/attachments', [WorkPlanController::class, 'storeApiAttachment'])
         ->name('work-orders.attachments.store.api');
     Route::post('/work-orders/{workOrder}/api/notes', [WorkPlanController::class, 'storeApiNote'])

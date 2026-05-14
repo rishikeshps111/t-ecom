@@ -21,9 +21,12 @@ use App\Models\WorkPlan;
 use App\Models\WorkPlanAttachment;
 use App\Models\WorkPlanNote;
 use App\Models\UserCompany;
+use App\Mail\WorkOrderDocumentMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Mail;
 use Yajra\DataTables\Facades\DataTables;
 use Spatie\Permission\Middleware\PermissionMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
@@ -42,6 +45,7 @@ class WorkPlanController extends Controller implements HasMiddleware
             new Middleware(PermissionMiddleware::using('wo.edit'), ['statusView', 'status', 'storePlannerPayout', 'storeProductionPayout', 'close', 'reject']),
             new Middleware(PermissionMiddleware::using('cn.edit'), ['storeNote', 'updateStatus']),
             new Middleware(PermissionMiddleware::using('document.edit'), ['storeAttachment']),
+            new Middleware('role:Super Admin', ['sendDocumentPdf']),
         ];
     }
 
@@ -351,6 +355,151 @@ class WorkPlanController extends Controller implements HasMiddleware
     public function details(WorkPlan $workOrder)
     {
         return view('admin.work-plan.detail', compact('workOrder'));
+    }
+
+    public function sendDocumentPdf(Request $request, WorkPlan $workOrder)
+    {
+        $validated = $request->validate([
+            'document_type' => ['required', 'in:quotation,invoice,receipt'],
+            'payment_id' => ['nullable', 'integer'],
+        ]);
+
+        $company = $workOrder->company;
+
+        if (!$company || blank($company->email_address)) {
+            return back()->with('error', 'Customer email address is missing.');
+        }
+
+        $document = $this->resolveWorkOrderMailDocument($workOrder, $validated['document_type'], $validated['payment_id'] ?? null);
+
+        if (!$document) {
+            return back()->with('error', 'Requested document was not found for this work order.');
+        }
+
+        $pdfContent = $this->generatePdfContent($document['view'], $document['data'], $document['log']);
+
+        Mail::to($company->email_address)->send(new WorkOrderDocumentMail(
+            $company,
+            $workOrder,
+            $document['label'],
+            $document['number'],
+            $document['filename'],
+            $pdfContent
+        ));
+
+        activity()
+            ->causedBy(Auth::id())
+            ->performedOn($workOrder)
+            ->log($document['label'] . ' PDF mailed to company: ' . $company->company_name);
+
+        return back()->with('success', $document['label'] . ' PDF sent successfully.');
+    }
+
+    private function resolveWorkOrderMailDocument(WorkPlan $workOrder, string $type, ?int $paymentId): ?array
+    {
+        if ($type === 'quotation') {
+            $quotation = $workOrder->quotation()
+                ->with(['company.address', 'customer', 'items.item', 'attachments'])
+                ->first();
+
+            if (!$quotation) {
+                return null;
+            }
+
+            $number = $quotation->quotation_number ?? $quotation->custom_quotation_id;
+
+            return [
+                'label' => 'Quotation',
+                'number' => $number,
+                'filename' => $this->safePdfFileName($number ?: 'quotation-' . $quotation->id),
+                'view' => 'admin.quotation.pdf',
+                'data' => ['quotation' => $quotation],
+                'log' => 'Browserless Quotation Mail PDF failed',
+            ];
+        }
+
+        if ($type === 'invoice') {
+            $invoice = $workOrder->quotation?->invoice()
+                ->with(['customer', 'company', 'items.item'])
+                ->first();
+
+            if (!$invoice) {
+                return null;
+            }
+
+            $number = $invoice->invoice_number ?? $invoice->custom_invoice_id;
+
+            return [
+                'label' => 'Invoice',
+                'number' => $number,
+                'filename' => $this->safePdfFileName($number ?: 'invoice-' . $invoice->id),
+                'view' => 'admin.invoice.pdf',
+                'data' => ['invoice' => $invoice],
+                'log' => 'Browserless Invoice Mail PDF failed',
+            ];
+        }
+
+        $receipt = $workOrder->quotation?->invoice?->payments()
+            ->whereKey($paymentId)
+            ->with(['invoice', 'creator'])
+            ->first();
+
+        if (!$receipt) {
+            return null;
+        }
+
+        $number = $receipt->custom_payment_id;
+
+        return [
+            'label' => 'Receipt',
+            'number' => $number,
+            'filename' => $this->safePdfFileName($number ?: 'receipt-' . $receipt->id),
+            'view' => 'admin.receipt.pdf',
+            'data' => ['receipt' => $receipt],
+            'log' => 'Browserless Receipt Mail PDF failed',
+        ];
+    }
+
+    private function generatePdfContent(string $view, array $data, string $logContext): string
+    {
+        $html = view($view, $data)->render();
+        $token = '2U5ktUiCF2NEhqG0e4fdd064c15559ac51f539392a464c95c';
+
+        $response = Http::timeout(60)
+            ->withHeaders([
+                'Content-Type' => 'application/json',
+                'Cache-Control' => 'no-cache',
+            ])
+            ->post("https://chrome.browserless.io/pdf?token={$token}", [
+                'html' => $html,
+                'options' => [
+                    'format' => 'A4',
+                    'landscape' => false,
+                    'printBackground' => true,
+                    'margin' => [
+                        'top' => '10mm',
+                        'right' => '10mm',
+                        'bottom' => '10mm',
+                        'left' => '10mm',
+                    ],
+                ],
+            ]);
+
+        if ($response->failed()) {
+            \Log::error($logContext, [
+                'status' => $response->status(),
+                'body' => $response->body(),
+            ]);
+
+            abort(500, 'PDF generation failed. Please try again.');
+        }
+
+        return $response->body();
+    }
+
+    private function safePdfFileName(string $name): string
+    {
+        return str_replace(['#', '/', '\\'], '_', $name) . '.pdf';
     }
 
     /**
