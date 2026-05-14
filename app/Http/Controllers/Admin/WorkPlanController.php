@@ -447,7 +447,39 @@ class WorkPlanController extends Controller implements HasMiddleware
      */
     public function destroy(WorkPlan $workOrder)
     {
-        $workOrder->delete();
+        DB::transaction(function () use ($workOrder) {
+            $quotation = Quotation::withoutGlobalScopes()
+                ->withTrashed()
+                ->where('work_plan_id', $workOrder->id)
+                ->first();
+
+            if ($quotation) {
+                $invoiceIds = Invoice::withoutGlobalScopes()
+                    ->withTrashed()
+                    ->where('quotation_id', $quotation->id)
+                    ->pluck('id');
+
+                if ($invoiceIds->isNotEmpty()) {
+                    $paymentIds = Payment::withoutGlobalScopes()
+                        ->whereIn('invoice_id', $invoiceIds)
+                        ->pluck('id');
+
+                    if ($paymentIds->isNotEmpty()) {
+                        PlannerPayout::whereIn('payment_id', $paymentIds)->delete();
+                        ProductionStaffPayout::whereIn('payment_id', $paymentIds)->delete();
+                    }
+
+                    PlannerPayout::whereIn('invoice_id', $invoiceIds)->delete();
+                    ProductionStaffPayout::whereIn('invoice_id', $invoiceIds)->delete();
+                    Payment::withoutGlobalScopes()->whereIn('invoice_id', $invoiceIds)->delete();
+                    Invoice::withoutGlobalScopes()->withTrashed()->whereIn('id', $invoiceIds)->forceDelete();
+                }
+
+                $quotation->forceDelete();
+            }
+
+            $workOrder->delete();
+        });
 
         activity()
             ->causedBy(Auth::id())
