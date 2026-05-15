@@ -361,13 +361,16 @@ class WorkPlanController extends Controller implements HasMiddleware
     {
         $validated = $request->validate([
             'document_type' => ['required', 'in:quotation,invoice,receipt'],
+            'recipient_type' => ['nullable', 'in:customer,planner'],
             'payment_id' => ['nullable', 'integer'],
         ]);
 
         $company = $workOrder->company;
+        $recipientType = $validated['recipient_type'] ?? 'customer';
+        $recipient = $this->resolveWorkOrderMailRecipient($workOrder, $recipientType);
 
-        if (!$company || blank($company->email_address)) {
-            return back()->with('error', 'Customer email address is missing.');
+        if (!$recipient) {
+            return back()->with('error', ucfirst($recipientType) . ' email address is missing.');
         }
 
         $document = $this->resolveWorkOrderMailDocument($workOrder, $validated['document_type'], $validated['payment_id'] ?? null);
@@ -378,11 +381,13 @@ class WorkPlanController extends Controller implements HasMiddleware
 
         $pdfContent = $this->generatePdfContent($document['view'], $document['data'], $document['log']);
 
-        Mail::to($company->email_address)->send(new WorkOrderDocumentMail(
+        Mail::to($recipient['email'])->send(new WorkOrderDocumentMail(
             $company,
             $workOrder,
             $document['label'],
             $document['number'],
+            $recipient['name'],
+            $document['code'],
             $document['filename'],
             $pdfContent
         ));
@@ -390,9 +395,38 @@ class WorkPlanController extends Controller implements HasMiddleware
         activity()
             ->causedBy(Auth::id())
             ->performedOn($workOrder)
-            ->log($document['label'] . ' PDF mailed to company: ' . $company->company_name);
+            ->log($document['label'] . ' PDF mailed to ' . $recipient['type'] . ': ' . $recipient['name']);
 
-        return back()->with('success', $document['label'] . ' PDF sent successfully.');
+        return back()->with('success', $document['label'] . ' PDF sent to ' . $recipient['type'] . ' successfully.');
+    }
+
+    private function resolveWorkOrderMailRecipient(WorkPlan $workOrder, string $recipientType): ?array
+    {
+        if ($recipientType === 'planner') {
+            $planner = $workOrder->planner;
+
+            if (!$planner || blank($planner->email)) {
+                return null;
+            }
+
+            return [
+                'type' => 'planner',
+                'name' => $planner->name,
+                'email' => $planner->email,
+            ];
+        }
+
+        $company = $workOrder->company;
+
+        if (!$company || blank($company->email_address)) {
+            return null;
+        }
+
+        return [
+            'type' => 'customer',
+            'name' => $company->company_name,
+            'email' => $company->email_address,
+        ];
     }
 
     private function resolveWorkOrderMailDocument(WorkPlan $workOrder, string $type, ?int $paymentId): ?array
@@ -410,6 +444,7 @@ class WorkPlanController extends Controller implements HasMiddleware
 
             return [
                 'label' => 'Quotation',
+                'code' => 'QT',
                 'number' => $number,
                 'filename' => $this->safePdfFileName($number ?: 'quotation-' . $quotation->id),
                 'view' => 'admin.quotation.pdf',
@@ -431,6 +466,7 @@ class WorkPlanController extends Controller implements HasMiddleware
 
             return [
                 'label' => 'Invoice',
+                'code' => 'IV',
                 'number' => $number,
                 'filename' => $this->safePdfFileName($number ?: 'invoice-' . $invoice->id),
                 'view' => 'admin.invoice.pdf',
@@ -452,6 +488,7 @@ class WorkPlanController extends Controller implements HasMiddleware
 
         return [
             'label' => 'Receipt',
+            'code' => 'OR',
             'number' => $number,
             'filename' => $this->safePdfFileName($number ?: 'receipt-' . $receipt->id),
             'view' => 'admin.receipt.pdf',

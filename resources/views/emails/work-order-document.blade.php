@@ -1,12 +1,9 @@
 <x-mail::message>
-# Hello {{ $company->company_name }},
+# Hi {{ $recipientName }},
 
-Please find attached the {{ strtolower($documentLabel) }} PDF
-@if($documentNumber)
-({{ $documentNumber }})
-@endif
-for work order {{ $workOrder->workplan_number }}.
+Please find attached the {{ $documentCode }}{{ $documentNumber }} for your reference
 
-Thanks,<br>
-{{ config('app.name') }}
+Team<br>
+Total Group<br>
+https://www.total.net.my/
 </x-mail::message>

@@ -20,6 +20,8 @@ class WorkOrderDocumentMail extends Mailable
         public WorkPlan $workOrder,
         public string $documentLabel,
         public ?string $documentNumber,
+        public string $recipientName,
+        public string $documentCode,
         private string $filename,
         private string $pdfContent
     ) {}

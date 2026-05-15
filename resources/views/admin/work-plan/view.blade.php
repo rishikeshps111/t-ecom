@@ -379,9 +379,22 @@
                                                                         action="{{ route('admin.work-orders.send-document-pdf', $workOrder->id) }}">
                                                                         @csrf
                                                                         <input type="hidden" name="document_type" value="quotation">
+                                                                        <input type="hidden" name="recipient_type" value="customer">
                                                                         <button type="submit" class="dropdown-item">
                                                                             <i class="fa-solid fa-envelope me-2 text-success"></i>
                                                                             Send PDF Mail to Customer
+                                                                        </button>
+                                                                    </form>
+                                                                </li>
+                                                                <li>
+                                                                    <form method="POST"
+                                                                        action="{{ route('admin.work-orders.send-document-pdf', $workOrder->id) }}">
+                                                                        @csrf
+                                                                        <input type="hidden" name="document_type" value="quotation">
+                                                                        <input type="hidden" name="recipient_type" value="planner">
+                                                                        <button type="submit" class="dropdown-item">
+                                                                            <i class="fa-solid fa-envelope me-2 text-primary"></i>
+                                                                            Send PDF Mail to Planner
                                                                         </button>
                                                                     </form>
                                                                 </li>
@@ -526,9 +539,22 @@
                                                                         action="{{ route('admin.work-orders.send-document-pdf', $workOrder->id) }}">
                                                                         @csrf
                                                                         <input type="hidden" name="document_type" value="invoice">
+                                                                        <input type="hidden" name="recipient_type" value="customer">
                                                                         <button type="submit" class="dropdown-item">
                                                                             <i class="fa-solid fa-envelope me-2 text-success"></i>
                                                                             Send PDF Mail to Customer
+                                                                        </button>
+                                                                    </form>
+                                                                </li>
+                                                                <li>
+                                                                    <form method="POST"
+                                                                        action="{{ route('admin.work-orders.send-document-pdf', $workOrder->id) }}">
+                                                                        @csrf
+                                                                        <input type="hidden" name="document_type" value="invoice">
+                                                                        <input type="hidden" name="recipient_type" value="planner">
+                                                                        <button type="submit" class="dropdown-item">
+                                                                            <i class="fa-solid fa-envelope me-2 text-primary"></i>
+                                                                            Send PDF Mail to Planner
                                                                         </button>
                                                                     </form>
                                                                 </li>
@@ -733,10 +759,24 @@
                                                                             action="{{ route('admin.work-orders.send-document-pdf', $workOrder->id) }}">
                                                                             @csrf
                                                                             <input type="hidden" name="document_type" value="receipt">
+                                                                            <input type="hidden" name="recipient_type" value="customer">
                                                                             <input type="hidden" name="payment_id" value="{{ $payment->id }}">
                                                                             <button type="submit" class="dropdown-item">
                                                                                 <i class="fa-solid fa-envelope me-2 text-success"></i>
                                                                                 Send PDF Mail to Customer
+                                                                            </button>
+                                                                        </form>
+                                                                    </li>
+                                                                    <li>
+                                                                        <form method="POST"
+                                                                            action="{{ route('admin.work-orders.send-document-pdf', $workOrder->id) }}">
+                                                                            @csrf
+                                                                            <input type="hidden" name="document_type" value="receipt">
+                                                                            <input type="hidden" name="recipient_type" value="planner">
+                                                                            <input type="hidden" name="payment_id" value="{{ $payment->id }}">
+                                                                            <button type="submit" class="dropdown-item">
+                                                                                <i class="fa-solid fa-envelope me-2 text-primary"></i>
+                                                                                Send PDF Mail to Planner
                                                                             </button>
                                                                         </form>
                                                                     </li>
