@@ -64,7 +64,7 @@
             {{ $company->company_name ?? 'All' }}
         </span>
 
-        <span style="display:inline-block; margin-left:25px; font-size:13px">
+        <span style="display:none; margin-left:25px; font-size:13px">
             <strong>Customer User:</strong>
             {{ $cusUser->name ?? 'All' }}
         </span>

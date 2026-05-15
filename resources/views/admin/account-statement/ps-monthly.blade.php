@@ -85,20 +85,19 @@
                                         </select>
                                     </div>
                                 </div>
-                                @if(!auth()->user()->hasRole('Production Staff'))
-                                    <div class="col-lg-4 mb-2">
-                                        <div class="o-f-inp">
-                                            <label>Production Staff</label>
-                                            <select id="filter-planner" class="form-control shadow-none">
-                                                <option value="">-- Select Production Staff --</option>
-                                                @foreach ($planners as $planner)
-                                                    <option value="{{ $planner->id }}">{{ $planner->name }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
+                                @role(['Production Staff'])
+                                <div class="col-lg-4 mb-2">
+                                    <div class="o-f-inp">
+                                        <label>Production Staff</label>
+                                        <select id="filter-planner" class="form-control shadow-none">
+                                            <option value="">-- Select Production Staff --</option>
+                                            @foreach ($planners as $planner)
+                                                <option value="{{ $planner->id }}">{{ $planner->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                     </div>
                                 @else
-
                                     <div class="col-lg-4 mb-2">
                                         <div class="o-f-inp">
                                             <label>Production Staff</label>
@@ -107,7 +106,6 @@
                                             </select>
                                         </div>
                                     </div>
-
                                 @endif
                                 <div class="col-lg-4 mb-2">
                                     <div class="o-f-inp">

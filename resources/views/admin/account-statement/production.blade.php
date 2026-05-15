@@ -20,7 +20,7 @@
             <div class="col-lg-12 mb-3">
                 <div class="main-table-container">
                     <div class="row">
-                        @unless (auth()->user()->hasRole('Production Staff'))
+                        @role(['Super Admin'])
                             <div class="col-lg-3">
                                 <div class="o-f-inp">
                                     <label for="filter-production">Filter by Production Staff</label>
@@ -34,7 +34,7 @@
                             </div>
                         @else
                             <input type="hidden" id="filter-production" value="{{ auth()->id() }}">
-                        @endunless
+                        @endrole
 
                         <div class="col-lg-3">
                             <div class="o-f-inp">

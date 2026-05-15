@@ -81,6 +81,7 @@
                                         </select>
                                     </div>
                                 </div>
+                                @role(['Super Admin'])
                                 <div class="col-lg-3">
                                     <div class="o-f-inp">
                                         <label for="filter-production">Filter by Production Staff</label>
@@ -93,6 +94,9 @@
                                         </select>
                                     </div>
                                 </div>
+                                @else
+                                <input type="hidden" id="filter-production" value="{{ auth()->id() }}">
+                                @endrole
                                 <div class="col-lg-3">
                                     <div class="o-f-inp">
                                         <label for="filter-total">Filter by Total Group</label>
