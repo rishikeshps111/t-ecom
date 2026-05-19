@@ -1025,6 +1025,12 @@ class AccountStatementController extends Controller implements HasMiddleware
             $totalGroup = Customer::withoutGlobalScope('exclude_default')->where('customer_name', 'Default')->first();
         }
 
+        if ($request->production_staff) {
+            $staff = User::find($request->production_staff);
+        } else {
+            $staff = null;
+        }
+
         $fromDate = $request->from_date;
         $toDate = $request->to_date;
 
@@ -1038,7 +1044,8 @@ class AccountStatementController extends Controller implements HasMiddleware
                 'totalGroup',
                 'fromDate',
                 'toDate',
-                'reportDate'
+                'reportDate',
+                'staff'
             )
         )->setPaper('a4', 'landscape');
 

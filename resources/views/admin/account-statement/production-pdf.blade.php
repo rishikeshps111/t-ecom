@@ -75,6 +75,11 @@
     </p>
 
     <p>
+        Ps Name :
+        {{ $staff->name ?? 'All' }}
+    </p>
+
+    <p>
         Period :
         {{ $fromDate ? \Carbon\Carbon::parse($fromDate)->format('d M Y') : '-' }}
         -
