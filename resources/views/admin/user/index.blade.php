@@ -114,6 +114,9 @@
                                         <div class="entry-select">
                                             <p>Showing</p>
                                             <form method="GET" action="{{ route('admin.manage.user') }}">
+                                                @foreach (request()->except(['entries', 'page']) as $key => $value)
+                                                    <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                                                @endforeach
                                                 <select name="entries" id="entries" class="form-select shadow-none"
                                                     onchange="this.form.submit()">
                                                     <option value="10" {{ request('entries') == '10' ? 'selected' : '' }}>10

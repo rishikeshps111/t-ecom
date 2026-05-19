@@ -52,7 +52,7 @@ class UserManagementController extends Controller implements HasMiddleware
             }
         }
 
-        $users = $query->orderBy('id', 'desc')->paginate($entries);
+        $users = $query->orderBy('id', 'desc')->paginate($entries)->withQueryString();
 
         $role = Role::whereIn('name', ['Accountant', 'Company Secretary', 'Auditor', 'Tax Consultant'])->get();
         $customers = Customer::get();
