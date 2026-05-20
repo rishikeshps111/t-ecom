@@ -105,6 +105,7 @@ class UserManagementController extends Controller implements HasMiddleware
             'joining_date' => 'required|date',
             'relived_at'   => 'required|date|after:joining_date',
             'user_type' => 'required|in:production,management',
+            'staff_role' => 'required_if:user_type,management|nullable|in:admin,management',
             // 'company'  => 'required|exists:companies,id',
             // 'status'   => 'required|in:0,1',
             // 'profile_image' => 'nullable|file|max:2048',
@@ -144,10 +145,17 @@ class UserManagementController extends Controller implements HasMiddleware
             // 'profile_image' => $profileImagePath,
         ]);
 
-        if ($request->user_type == 'Production Staff') {
-            $user->syncRoles(['Production Staff']);
-        } else {
-            $user->syncRoles(['Management Staff']);
+        $staffRole = $request->user_type === 'production'
+            ? 'Production Staff'
+            : ($request->staff_role === 'admin' ? 'Admin' : 'Management Staff');
+
+        $user->syncRoles([$staffRole]);
+
+        if ($request->user_type === 'management' && $request->staff_role === 'admin') {
+            $request->merge([
+                'total_groups' => [],
+                'companies' => [],
+            ]);
         }
 
         if ($request->has('total_groups')) {
@@ -217,6 +225,7 @@ class UserManagementController extends Controller implements HasMiddleware
             // 'status'  => 'required|in:0,1',
             'relived_at'   => 'required|date|after:joining_date',
             'user_type' => 'required|in:production,management',
+            'staff_role' => 'required_if:user_type,management|nullable|in:admin,management',
             'total_groups' => 'nullable|array', // validate as array
             'total_groups.*' => 'exists:customers,id',
             'companies' => 'nullable|array', // validate as array
@@ -253,9 +262,13 @@ class UserManagementController extends Controller implements HasMiddleware
         //     $user->profile_image = 'uploads/users/' . $imageName;
         // }
 
-        $user->totalGroups()->sync($request->total_groups ?? []);
-        $user->companies()->sync($request->companies ?? []);
+        $staffRole = $request->user_type === 'production'
+            ? 'Production Staff'
+            : ($request->staff_role === 'admin' ? 'Admin' : 'Management Staff');
 
+        $user->syncRoles([$staffRole]);
+        $user->totalGroups()->sync($staffRole === 'Admin' ? [] : ($request->total_groups ?? []));
+        $user->companies()->sync($staffRole === 'Admin' ? [] : ($request->companies ?? []));
 
         // $user->syncRoles([
         //     Role::findById($request->role)

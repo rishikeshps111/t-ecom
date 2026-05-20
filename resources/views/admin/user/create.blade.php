@@ -121,6 +121,23 @@
 
                             <input type="hidden" name="user_type" value="{{ request()->get('type', 'production') }}">
 
+                            @if (request()->get('type') == 'management')
+                                <div class="col-lg-4 mb-3 o-f-inp">
+                                    <label>User Type <span class="text-danger">*</span></label>
+                                    <select name="staff_role" id="staffRole" class="form-select shadow-none">
+                                        <option value="management" {{ old('staff_role', 'management') == 'management' ? 'selected' : '' }}>
+                                            Management Staff
+                                        </option>
+                                        <option value="admin" {{ old('staff_role') == 'admin' ? 'selected' : '' }}>
+                                            Admin
+                                        </option>
+                                    </select>
+                                    @error('staff_role')
+                                        <small class="text-danger">{{ $message }}</small>
+                                    @enderror
+                                </div>
+                            @endif
+
                             {{-- Password --}}
                             <div class="col-lg-4 mb-3 o-f-inp">
                                 <label>Password <span class="text-danger">*</span></label>
@@ -151,7 +168,7 @@
                             @endif
 
                             @if (request()->get('type') == 'management')
-                                <div class="col-lg-12 mb-3 o-f-inp">
+                                <div class="col-lg-12 mb-3 o-f-inp management-assignment-field">
                                     <div class="d-flex justify-content-between align-items-center mb-1">
                                         <label for="companies" class="mb-0">Select Customers</label>
                                         <button type="button" id="toggleCompanies"
@@ -176,7 +193,7 @@
                                 </div>
                             @endif
 
-                            <div class="col-lg-12 mb-3 o-f-inp">
+                            <div class="col-lg-12 mb-3 o-f-inp management-assignment-field">
                                 <label class="form-label label-between">Select Total Groups <button type="button"
                                         id="checkAllBtn" class="btn btn-sm btn-primary">Check All</button></label>
 
@@ -242,7 +259,7 @@
     @include('admin.scripts.script')
     <script>
         const checkAllBtn = document.getElementById('checkAllBtn');
-        checkAllBtn.addEventListener('click', function() {
+        checkAllBtn?.addEventListener('click', function() {
             const checkboxes = document.querySelectorAll('.total-group-checkbox');
             const allChecked = Array.from(checkboxes).every(cb => cb.checked);
             checkboxes.forEach(cb => cb.checked = !allChecked);
@@ -264,5 +281,18 @@
             // If using Select2 / Choices / other plugins
             $(select).trigger('change');
         });
+    </script>
+    <script>
+        function toggleManagementAssignmentFields() {
+            const staffRole = document.getElementById('staffRole');
+            const shouldShowAssignments = !staffRole || staffRole.value !== 'admin';
+
+            document.querySelectorAll('.management-assignment-field').forEach(field => {
+                field.classList.toggle('d-none', !shouldShowAssignments);
+            });
+        }
+
+        document.getElementById('staffRole')?.addEventListener('change', toggleManagementAssignmentFields);
+        toggleManagementAssignmentFields();
     </script>
 @endsection
