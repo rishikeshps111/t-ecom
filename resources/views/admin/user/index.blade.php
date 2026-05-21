@@ -65,12 +65,28 @@
                                     <label for="">Filter by Status</label>
                                     <select name="status" id="status" class="form-select shadow-none">
                                         <option value="">--- Select ---</option>
-                                        <option value="1">Active</option>
-                                        <option value="0">Inactive</option>
+                                        <option value="1" {{ request('status') === '1' ? 'selected' : '' }}>Active</option>
+                                        <option value="0" {{ request('status') === '0' ? 'selected' : '' }}>Inactive</option>
 
                                     </select>
                                 </div>
                             </div>
+                            @if (request('type') == 'management')
+                                <div class="col-lg-4">
+                                    <div class="o-f-inp">
+                                        <label for="">Filter by User Type</label>
+                                        <select name="staff_role" id="staff_role" class="form-select shadow-none">
+                                            <option value="">--- Select ---</option>
+                                            <option value="management" {{ request('staff_role') == 'management' ? 'selected' : '' }}>
+                                                Management Staff
+                                            </option>
+                                            <option value="admin" {{ request('staff_role') == 'admin' ? 'selected' : '' }}>
+                                                Admin
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            @endif
                             <div class="col-lg-4">
                                 <div class="o-f-inp">
                                     <label for="">Filter by Total Group</label>
@@ -78,7 +94,9 @@
                                         class="form-select shadow-none search-select">
                                         <option value="">--- Select ---</option>
                                         @foreach ($customers as $customer)
-                                            <option value="{{ $customer->id }}">{{ $customer->customer_name }}</option>
+                                            <option value="{{ $customer->id }}" {{ request('total_group') == $customer->id ? 'selected' : '' }}>
+                                                {{ $customer->customer_name }}
+                                            </option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -86,11 +104,13 @@
                             <div class="col-lg-4 {{ request('type') == 'production' ? 'd-none' : '' }}">
                                 <div class="o-f-inp">
                                     <label for="">Filter by Company</label>
-                                    <select name="filter-company" id="filter-company"
+                                    <select name="company" id="filter-company"
                                         class="form-select shadow-none search-select">
                                         <option value="">--- Select ---</option>
                                         @foreach ($companies as $company)
-                                            <option value="{{ $company->id }}">{{ $company->company_name }}</option>
+                                            <option value="{{ $company->id }}" {{ request('company') == $company->id ? 'selected' : '' }}>
+                                                {{ $company->company_name }}
+                                            </option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -150,6 +170,7 @@
                                                 <th class="text-center"> Name</th>
                                                 <th class="text-center">Email</th>
                                                 <th class="text-center ">Mobile Number </th>
+                                                <th class="text-center">User Type</th>
                                                 {{-- <th class="text-center ">Role </th> --}}
                                                 <!-- <th class="text-center ">Assigned Companies</th> -->
                                                 @if (request('type') == 'production')
@@ -171,6 +192,7 @@
                                                     <td>{{ $user->name }}</td>
                                                     <td>{{ $user->email }}</td>
                                                     <td class="nowrap">{{ $user->phone }}</td>
+                                                    <td>{{ $user->roles->first()->name ?? '-' }}</td>
                                                     {{-- <td>{{ $user->roles->first()->name ?? '-' }}</td> --}}
                                                     <!-- <td>-</td> -->
                                                     @if (request('type') == 'production')
@@ -331,9 +353,10 @@
                 let query = $('#searchInput').val();
                 let role = $('#role').val();
                 let status = $('#status').val();
+                let staff_role = $('#staff_role').val();
                 let total_group = $('#total_group').val();
                 let company = $('#filter-company').val();
-                let entries = $('#entriesSelect').val();
+                let entries = $('#entries').val();
 
                 const urlParams = new URLSearchParams(window.location.search);
                 const type = urlParams.get('type') || 'management';
@@ -345,6 +368,9 @@
                         search: query,
                         role: role,
                         status: status,
+                        staff_role: staff_role,
+                        total_group: total_group,
+                        company: company,
                         entries: entries,
                         type: type
                     },
@@ -359,17 +385,21 @@
                 });
             }
 
-            $('#searchInput,#role,#status,#filter-company,#total_group').on('keyup change', function () {
+            $('#searchInput,#role,#status,#staff_role,#filter-company,#total_group').on('keyup change', function () {
                 fetchFilteredData();
             });
 
-            $('#entriesSelect').on('change', function () {
+            $('#entries').on('change', function () {
                 fetchFilteredData();
             });
 
             document.getElementById('resetBtn').addEventListener('click', function () {
                 document.getElementById('role').value = '';
                 document.getElementById('status').value = '';
+                const staffRole = document.getElementById('staff_role');
+                if (staffRole) {
+                    staffRole.value = '';
+                }
                 $('#total_group').val('').trigger('change');
                 $('#filter-company').val('').trigger('change');
                 fetchFilteredData();

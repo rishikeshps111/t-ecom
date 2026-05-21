@@ -38,10 +38,14 @@ class UserManagementController extends Controller implements HasMiddleware
             $query->where('status',  $request->status);
         }
         if ($request->filled('total_group')) {
-            $query->whereRelation('totalGroups', 'total_group_id', $request->total_group);
+            $query->whereHas('totalGroups', function ($q) use ($request) {
+                $q->where('customers.id', $request->total_group);
+            });
         }
         if ($request->filled('company')) {
-            $query->whereRelation('companies', 'company_id', $request->company);
+            $query->whereHas('companies', function ($q) use ($request) {
+                $q->where('companies.id', $request->company);
+            });
         }
         if ($request->filled('role')) {
             $role = Role::find($request->role);
@@ -50,6 +54,12 @@ class UserManagementController extends Controller implements HasMiddleware
                     $q->where('name', $role->name);
                 });
             }
+        }
+        if ($request->filled('staff_role')) {
+            $roleName = $request->staff_role === 'admin' ? 'Admin' : 'Management Staff';
+            $query->whereHas('roles', function ($q) use ($roleName) {
+                $q->where('name', $roleName);
+            });
         }
 
         $users = $query->orderBy('id', 'desc')->paginate($entries)->withQueryString();
@@ -150,13 +160,6 @@ class UserManagementController extends Controller implements HasMiddleware
             : ($request->staff_role === 'admin' ? 'Admin' : 'Management Staff');
 
         $user->syncRoles([$staffRole]);
-
-        if ($request->user_type === 'management' && $request->staff_role === 'admin') {
-            $request->merge([
-                'total_groups' => [],
-                'companies' => [],
-            ]);
-        }
 
         if ($request->has('total_groups')) {
             foreach ($request->total_groups as $groupId) {
@@ -267,8 +270,8 @@ class UserManagementController extends Controller implements HasMiddleware
             : ($request->staff_role === 'admin' ? 'Admin' : 'Management Staff');
 
         $user->syncRoles([$staffRole]);
-        $user->totalGroups()->sync($staffRole === 'Admin' ? [] : ($request->total_groups ?? []));
-        $user->companies()->sync($staffRole === 'Admin' ? [] : ($request->companies ?? []));
+        $user->totalGroups()->sync($request->total_groups ?? []);
+        $user->companies()->sync($request->companies ?? []);
 
         // $user->syncRoles([
         //     Role::findById($request->role)

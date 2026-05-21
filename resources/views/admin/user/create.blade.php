@@ -282,17 +282,4 @@
             $(select).trigger('change');
         });
     </script>
-    <script>
-        function toggleManagementAssignmentFields() {
-            const staffRole = document.getElementById('staffRole');
-            const shouldShowAssignments = !staffRole || staffRole.value !== 'admin';
-
-            document.querySelectorAll('.management-assignment-field').forEach(field => {
-                field.classList.toggle('d-none', !shouldShowAssignments);
-            });
-        }
-
-        document.getElementById('staffRole')?.addEventListener('change', toggleManagementAssignmentFields);
-        toggleManagementAssignmentFields();
-    </script>
 @endsection
