@@ -153,7 +153,8 @@
                                     <div class="col-lg-5">
                                         <div class="table-search">
                                             <label for="search">Search </label>
-                                            <input type="text" class="form-control shadow-none">
+                                            <input type="text" name="search" value="{{ request('search') }}"
+                                                id="searchInput" class="form-control shadow-none">
                                         </div>
                                     </div>
                                 </div>
@@ -393,9 +394,10 @@
                 fetchFilteredData();
             });
 
-            document.getElementById('resetBtn').addEventListener('click', function () {
-                document.getElementById('role').value = '';
-                document.getElementById('status').value = '';
+                document.getElementById('resetBtn').addEventListener('click', function () {
+                    document.getElementById('searchInput').value = '';
+                    document.getElementById('role').value = '';
+                    document.getElementById('status').value = '';
                 const staffRole = document.getElementById('staff_role');
                 if (staffRole) {
                     staffRole.value = '';

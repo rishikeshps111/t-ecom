@@ -20,7 +20,7 @@ class AllDocumentManagerController extends Controller
                 'totalGroup' => function ($query) {
                     $query->withoutGlobalScope('exclude_default');
                 }
-            ])->orderBy('id', 'desc');
+            ])->orderBy('id', 'desc')   ;
 
             if ($request->filled('search_term')) {
                 $search = trim($request->search_term);

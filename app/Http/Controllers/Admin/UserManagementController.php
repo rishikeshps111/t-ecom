@@ -34,6 +34,15 @@ class UserManagementController extends Controller implements HasMiddleware
             $query->where('user_type', $request->type);
         }
 
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('user_code', 'like', "%{$search}%")
+                    ->orWhere('name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
         if ($request->filled('status')) {
             $query->where('status',  $request->status);
         }
