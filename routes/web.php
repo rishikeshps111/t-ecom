@@ -16,13 +16,16 @@ use App\Http\Controllers\Admin\StateController;
 use App\Http\Controllers\Admin\SubCategoryController;
 use App\Http\Controllers\Admin\SystemSettingController;
 use App\Http\Controllers\Admin\UserManagementController;
+use App\Http\Controllers\FrontendController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    // return view('welcome');
-    return redirect()->to(route('admin.login'));
-});
+Route::get('/', [FrontendController::class, 'home'])->name('home');
+Route::get('/contact', [FrontendController::class, 'contact'])->name('contact');
+Route::get('/service-one', [FrontendController::class, 'serviceOne'])->name('service.one');
+Route::get('/service-two', [FrontendController::class, 'serviceTwo'])->name('service.two');
+Route::get('/service-three', [FrontendController::class, 'serviceThree'])->name('service.three');
+Route::get('/total-net', [FrontendController::class, 'totalNet'])->name('total.net');
 
 Route::get('/dashboard', function () {
     return view('dashboard');

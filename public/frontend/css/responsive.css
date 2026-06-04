@@ -1,0 +1,90 @@
+@media screen and (max-width:1200px){}
+@media screen and (max-width:991px){
+    .carousel-btn2 .owl-nav button.owl-next {
+    
+    right: 10px !important;
+
+}
+
+.carousel-btn2 .owl-nav button.owl-prev {
+   
+    left: 10px !important;
+
+}
+.svc-video-right{
+    padding-top: 10px;
+}
+.achivements-title h2{
+    text-align: center;
+    font-size: 25px;
+}
+div.ps-5-0{
+    padding-left: 15px !important;
+}
+.testimonial-carousel .owl-nav button{
+   position: static !important;
+}
+.testimonial-carousel .owl-nav {
+   justify-content: flex-start !important;
+   gap: 10px;
+   padding-top: 15px !important;
+}
+.test-widget{
+    min-height: unset !important;
+}
+}
+@media screen and (max-width:768px){
+    .baner-caption,.baner{
+        height: fit-content;
+    }
+    .baner{
+        padding: 20px 0;
+    }
+    .baner-caption h1{
+        font-size: 30px;
+    }
+    
+
+}
+@media screen and (max-width:567px){
+    .baner-caption h1{
+        font-size: 28px;
+    }
+    .section-para p{
+        font-size: 16px;
+    }
+    .service-widget h3{
+        font-size: 20px;
+        line-height: 30px;
+    }
+    .service-widget img{
+        width: 150px;
+        height: 150px;
+    }
+    .cta-box h2{
+        font-size: 20px;
+    }
+    .navbar-brand img{
+        width: 100px;
+    }
+    .btns-nav{
+        gap: 2px;
+    }
+    .btns-nav li a{
+        font-size: 15px;
+    }
+    .team-images{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .team-images img{
+        width: 200px !important;
+    }
+    .about-img img{
+        height: 280px;
+    }
+    .page-baner h1{
+        font-size: 30px;
+    }
+}
